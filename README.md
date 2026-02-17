@@ -1,4 +1,4 @@
-# SciGraph
+# <img src="public/logo-dark.svg" width="32" height="32" align="center" alt="SciGraph Logo" /> SciGraph
 
 **SciGraph** is a high-precision scientific data visualization tool designed for researchers and engineers. It bridges the gap between raw data acquisition and actionable insights through an intuitive, extensible interface.
 
@@ -28,6 +28,8 @@ npm run dev
 ## Deployment
 
 Automated deployment via GitHub Actions is supported. Push to `main` to trigger a build and deploy to GitHub Pages.
+
+**Live URL**: [scigraph.trytoinnovate.com](https://scigraph.trytoinnovate.com/)
 
 ## Release
 
