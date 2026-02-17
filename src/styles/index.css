@@ -1,0 +1,117 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap');
+@import "tailwindcss";
+
+/* ── Theme Tokens (Tailwind v4) ── */
+@theme {
+  --font-sans: 'Inter', system-ui, -apple-system, sans-serif;
+  --font-mono: 'JetBrains Mono', monospace;
+}
+
+/* ── CSS Custom Properties for Theming ── */
+:root,
+[data-theme="dark"] {
+  --app-bg: #09090b;
+  --panel-bg: #18181b;
+  --surface-bg: #27272a;
+  --active-bg: #3f3f46;
+  --canvas-bg: #000000;
+
+  --text-1: #fafafa;
+  /* High contrast primary */
+  --text-2: #e4e4e7;
+  /* Secondary */
+  --text-3: #b4b4bc;
+  /* Muted */
+  --text-4: #8b8b94;
+  /* Subtle */
+
+  --border-1: #27272a;
+  --border-2: #3f3f46;
+
+  --accent: #3b82f6;
+  --accent-hover: #2563eb;
+  --accent-surface: rgba(59, 130, 246, 0.1);
+
+  --success: #10b981;
+  --error: #f87171;
+}
+
+[data-theme="light"] {
+  --app-bg: #f4f4f5;
+  --panel-bg: #ffffff;
+  --surface-bg: #e4e4e7;
+  --active-bg: #d4d4d8;
+  --canvas-bg: #fafafa;
+
+  --text-1: #09090b;
+  --text-2: #1c1c1e;
+  --text-3: #3f3f46;
+  --text-4: #71717a;
+
+  --border-1: #e4e4e7;
+  --border-2: #d4d4d8;
+
+  --accent: #2563eb;
+  --accent-hover: #1d4ed8;
+  --accent-surface: rgba(37, 99, 235, 0.08);
+
+  --success: #059669;
+  --error: #dc2626;
+}
+
+/* ── Base ── */
+@layer base {
+
+  html,
+  body,
+  #root {
+    height: 100%;
+    width: 100%;
+    margin: 0;
+    padding: 0;
+  }
+
+  body {
+    background-color: var(--app-bg);
+    color: var(--text-1);
+    font-family: var(--font-sans);
+    -webkit-font-smoothing: antialiased;
+    overflow: hidden;
+    font-size: 15px;
+    line-height: 1.5;
+  }
+
+  /* Remove number input spinners */
+  input[type=number]::-webkit-inner-spin-button,
+  input[type=number]::-webkit-outer-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+  }
+
+  input[type=number] {
+    -moz-appearance: textfield;
+  }
+
+  /* Scrollbar */
+  ::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+  }
+
+  ::-webkit-scrollbar-track {
+    background: transparent;
+  }
+
+  ::-webkit-scrollbar-thumb {
+    background: var(--border-2);
+    border-radius: 4px;
+  }
+
+  ::-webkit-scrollbar-thumb:hover {
+    background: var(--text-4);
+  }
+
+  ::selection {
+    background: rgba(59, 130, 246, 0.3);
+  }
+}
