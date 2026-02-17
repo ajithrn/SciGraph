@@ -6,6 +6,8 @@ import GraphViewer from './components/GraphViewer';
 import AnalysisPanel from './components/AnalysisPanel';
 import { Sun, Moon } from 'lucide-react';
 
+import { version } from '../package.json';
+
 function StatusBar() {
   const { activeDataset, state } = useData();
   const { activeGraphConfig } = state;
@@ -21,7 +23,7 @@ function StatusBar() {
         {activeDataset && <span>{activeDataset.name}</span>}
       </div>
       <div className="flex items-center gap-4">
-        <span>SciGraph v1.0 · Scientific Data Visualization</span>
+        <span>SciGraph v{version} · Scientific Data Visualization</span>
       </div>
     </footer>
   );
