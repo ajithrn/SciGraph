@@ -2,6 +2,8 @@ import React, { useState, useRef, useCallback, useMemo, useEffect } from 'react'
 import { useData } from '../context/DataContext';
 import ChartFactory, { CHART_TYPES } from './ChartFactory';
 import ProcessedDataViewer from './ProcessedDataViewer';
+import HelpPanel from './HelpPanel';
+import ResizablePanel from './ResizablePanel';
 import { getTransforms, buildProcessedData, getTransformById } from '../analysis/transforms';
 import { ZoomIn, ZoomOut, RotateCcw, Download, HelpCircle, X, Trash2, Table2, Maximize2, Minimize2 } from 'lucide-react';
 import html2canvas from 'html2canvas';
@@ -19,6 +21,8 @@ const GraphViewer = () => {
   const { activeGraphConfig, selectedRegion } = state;
   const [showHelp, setShowHelp] = useState(false);
   const [showData, setShowData] = useState(false);
+  const [dataPanelHeight, setDataPanelHeight] = useState(300);
+  const [helpPanelHeight, setHelpPanelHeight] = useState(250);
   const [zoomLevel, setZoomLevel] = useState(1);
   const chartRef = useRef(null);
   const scrollContainerRef = useRef(null);
@@ -337,26 +341,16 @@ const GraphViewer = () => {
 
       {/* Processed Data Table */}
       {showData && processed && (
-        <ProcessedDataViewer data={processed.data} xKey={processed.xKey} yKey={processed.yKey} onClose={() => setShowData(false)} />
+        <ResizablePanel height={dataPanelHeight} setHeight={setDataPanelHeight} minHeight={150} maxHeight={600} onClose={() => setShowData(false)}>
+          <ProcessedDataViewer data={processed.data} xKey={processed.xKey} yKey={processed.yKey} onClose={() => setShowData(false)} />
+        </ResizablePanel>
       )}
 
       {/* Help */}
       {showHelp && (
-        <div className="shrink-0 px-4 py-3 text-xs leading-relaxed overflow-y-auto"
-          style={{ background: 'var(--panel-bg)', borderTop: '1px solid var(--border-1)', color: 'var(--text-3)' }}>
-          <div className="flex items-start justify-between gap-4">
-            <div className="space-y-1.5">
-              <div><strong style={{ color: 'var(--text-2)' }}>Axes:</strong> Choose X and Y columns from the dropdowns.</div>
-              <div><strong style={{ color: 'var(--text-2)' }}>Chart Type:</strong> Switch between Line, Line+Dots, Scatter, Area, Step, and Bar from the toolbar dropdown.</div>
-              <div><strong style={{ color: 'var(--text-2)' }}>Transform:</strong> Pick a function from <strong>f(x)</strong>. For <code>a × b</code>, pick the second column. Chain transforms with the <strong>wrap</strong> dropdown (e.g. <code>ln(a×b)</code>).</div>
-              <div><strong style={{ color: 'var(--text-2)' }}>Zoom:</strong> Use the zoom buttons to magnify. Scroll to pan. Reset with the ↻ button.</div>
-              <div><strong style={{ color: 'var(--text-2)' }}>Select Region:</strong> Click and drag on the graph to highlight a region for analysis.</div>
-              <div><strong style={{ color: 'var(--text-2)' }}>Full Width:</strong> Toggle the expand button to hide sidebars and maximize the chart.</div>
-              <div><strong style={{ color: 'var(--text-2)' }}>Data Table:</strong> View processed values with the table icon.</div>
-            </div>
-            <button onClick={() => setShowHelp(false)} className="shrink-0 p-1 rounded" style={{ color: 'var(--text-4)' }}><X size={14} /></button>
-          </div>
-        </div>
+        <ResizablePanel height={helpPanelHeight} setHeight={setHelpPanelHeight} minHeight={150} maxHeight={600} onClose={() => setShowHelp(false)}>
+          <HelpPanel onClose={() => setShowHelp(false)} />
+        </ResizablePanel>
       )}
     </div>
   );

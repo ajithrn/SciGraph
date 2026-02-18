@@ -2,6 +2,7 @@ import React, { useState, useMemo } from 'react';
 import Papa from 'papaparse';
 import * as XLSX from 'xlsx';
 import { useData } from '../context/DataContext';
+import ResizablePanel from './ResizablePanel';
 import {
   Upload, FileText, ChevronDown, ChevronRight, Table, ArrowLeft, Plus, Pencil, Check, Clock, X
 } from 'lucide-react';
@@ -29,6 +30,7 @@ const DataUploader = () => {
   const [editingColumn, setEditingColumn] = useState(null);
   const [editValue, setEditValue] = useState('');
   const [showRawData, setShowRawData] = useState(false);
+  const [rawDataHeight, setRawDataHeight] = useState(200);
 
 
 
@@ -359,6 +361,7 @@ const DataUploader = () => {
       {/* ── Raw Data Table ── */}
       {activeDataset && (
         <div className="shrink-0 flex flex-col" style={{ borderTop: '1px solid var(--border-1)' }}>
+          {/* Resize Handle (only when open) */}
           <button
             className="flex items-center gap-2 px-3 py-2 w-full text-left"
             style={{ color: 'var(--text-3)' }}
@@ -369,32 +372,41 @@ const DataUploader = () => {
             <span className="text-[11px] font-bold uppercase tracking-wider">Data</span>
             <span className="text-[10px] font-mono ml-auto" style={{ color: 'var(--text-4)' }}>{activeDataset.data.length} rows</span>
           </button>
+
           {showRawData && (
-            <div className="overflow-auto" style={{ maxHeight: '200px' }}>
-              <table className="w-full text-[10px] font-mono" style={{ borderCollapse: 'collapse' }}>
-                <thead>
-                  <tr>
-                    {activeDataset.headers.map(h => (
-                      <th key={h} className="px-2 py-1 text-left sticky top-0"
-                        style={{ background: 'var(--surface-bg)', color: 'var(--text-3)', borderBottom: '1px solid var(--border-2)' }}>
-                        {h}
-                      </th>
-                    ))}
-                  </tr>
-                </thead>
-                <tbody>
-                  {activeDataset.data.map((row, i) => (
-                    <tr key={i}>
+            <ResizablePanel
+              height={rawDataHeight}
+              setHeight={setRawDataHeight}
+              minHeight={100}
+              maxHeight={600}
+              mode="relative"
+            >
+              <div className="overflow-auto h-full">
+                <table className="w-full text-[10px] font-mono" style={{ borderCollapse: 'collapse' }}>
+                  <thead>
+                    <tr>
                       {activeDataset.headers.map(h => (
-                        <td key={h} className="px-2 py-0.5" style={{ color: 'var(--text-2)', borderBottom: '1px solid var(--border-1)' }}>
-                          {row[h] != null ? (typeof row[h] === 'number' ? row[h].toPrecision(4) : row[h]) : '—'}
-                        </td>
+                        <th key={h} className="px-2 py-1 text-left sticky top-0"
+                          style={{ background: 'var(--surface-bg)', color: 'var(--text-3)', borderBottom: '1px solid var(--border-2)' }}>
+                          {h}
+                        </th>
                       ))}
                     </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
+                  </thead>
+                  <tbody>
+                    {activeDataset.data.map((row, i) => (
+                      <tr key={i}>
+                        {activeDataset.headers.map(h => (
+                          <td key={h} className="px-2 py-0.5" style={{ color: 'var(--text-2)', borderBottom: '1px solid var(--border-1)' }}>
+                            {row[h] != null ? (typeof row[h] === 'number' ? row[h].toPrecision(4) : row[h]) : '—'}
+                          </td>
+                        ))}
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            </ResizablePanel>
           )}
         </div>
       )}

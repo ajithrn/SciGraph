@@ -17,8 +17,8 @@ const ProcessedDataViewer = ({ data, xKey, yKey, onClose }) => {
   };
 
   return (
-    <div className="shrink-0 flex flex-col max-h-52 border-t"
-      style={{ borderColor: 'var(--border-1)', background: 'var(--panel-bg)' }}>
+    <div className="shrink-0 flex flex-col h-full"
+      style={{ background: 'var(--panel-bg)' }}>
 
       {/* Header */}
       <div className="flex items-center justify-between px-3 py-1.5 shrink-0"

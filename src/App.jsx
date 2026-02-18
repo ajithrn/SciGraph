@@ -86,7 +86,7 @@ function AppContent() {
         )}
 
         {/* Main Canvas */}
-        <main className="relative flex-1 flex flex-col min-w-0 overflow-auto"
+        <main className="relative flex-1 flex flex-col min-w-0 overflow-hidden"
           style={{ background: 'var(--canvas-bg)' }}
         >
           <GraphViewer />
