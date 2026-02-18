@@ -57,6 +57,10 @@ const GraphViewer = () => {
 
   // ── Zoom ──
   const zoomIn = useCallback(() => {
+    // Force measure width before zoom to ensure we have a valid base width
+    if (scrollContainerRef.current && scrollContainerRef.current.clientWidth > 0) {
+      setContainerWidth(scrollContainerRef.current.clientWidth);
+    }
     setZoomLevel(prev => {
       const next = Math.min(+(prev + ZOOM_STEP).toFixed(1), ZOOM_MAX);
       setTimeout(() => {

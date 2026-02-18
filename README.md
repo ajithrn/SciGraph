@@ -1,4 +1,4 @@
-# <img src="public/logo-dark.svg" width="32" height="32" align="center" alt="SciGraph Logo" /> SciGraph
+# <img src="public/logo-dark.svg" width="32" height="32" style="vertical-align: middle; margin-right: 8px;" alt="SciGraph Logo" /> SciGraph
 
 **SciGraph** is a high-precision scientific data visualization tool designed for researchers and engineers. It bridges the gap between raw data acquisition and actionable insights through an intuitive, extensible interface.
 
