@@ -1,7 +1,7 @@
 
 import React, { useEffect, useState, useRef } from 'react';
 
-const ResizablePanel = ({ children, height, setHeight, minHeight = 100, maxHeight = 600, onClose, mode = 'fixed' }) => {
+const ResizablePanel = ({ children, height, setHeight, minHeight = 100, maxHeight = 900, onClose, mode = 'fixed', className = '' }) => {
   const [isResizing, setIsResizing] = useState(false);
   const startRef = useRef({ y: 0, h: 0 });
 
@@ -45,13 +45,13 @@ const ResizablePanel = ({ children, height, setHeight, minHeight = 100, maxHeigh
     startRef.current = { y: e.clientY, h: height };
   };
 
-  const containerClasses = mode === 'fixed'
-    ? "absolute bottom-0 left-0 right-0 z-20 flex flex-col shadow-xl"
-    : "flex flex-col shrink-0 transition-none"; // relative/embedded mode
+  const baseClasses = mode === 'fixed'
+    ? "absolute bottom-0 left-0 right-0 flex flex-col shadow-xl"
+    : "flex flex-col shrink-0 transition-none";
 
   return (
     <div
-      className={containerClasses}
+      className={`${baseClasses} ${className}`}
       style={{
         height,
         background: 'var(--panel-bg)',

@@ -4,11 +4,12 @@
 
 ## Core Capabilities
 
-- **Universal Import**: Support for `CSV`, `XLS`, and `XLSX` (auto-detects headers).
-- **Precision Plotting**: 6 chart types (Line, Scatter, Step, Bar, etc.) with scientific styling and 16:10 aspect ratio.
-- **Data Analysis**: Built-in linear regression, region selection (ROI), and mathematical transforms (`ln`, `log`, `√`, `x²`, `1/x`).
-- **Thermal Diffusivity**: Specialized module for calculating diffusivity ($D$) from slope ($B$).
-- **Modern UI**: Dark/Light themes, full-width mode, and persistent dataset history.
+- **Universal Import**: Support for `CSV`, `XLS`, and `XLSX` (auto-detects headers) with drag & drop.
+- **Precision Plotting**: 6 chart types (Line, Scatter, Area, Step, Bar, Dots) with scientific styling.
+- **Data Transformation**: Advanced math (`ln`, `log`, `√`, `x²`, `1/x`), column arithmetic, and chaining.
+- **Data Analysis**: Automated linear regression, interactive area selection (ROI), and statistical summaries.
+- **Modern UI**: Dark/Light themes, resizable panels, and global font scaling (A+/A-).
+- **Export**: Download publication-ready charts (PNG) and processed data tables.
 
 ## Documentation
 

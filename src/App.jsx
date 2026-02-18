@@ -1,10 +1,11 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { DataProvider, useData } from './context/DataContext';
 import { ThemeProvider, useTheme } from './context/ThemeContext';
 import DataUploader from './components/DataUploader';
 import GraphViewer from './components/GraphViewer';
 import AnalysisPanel from './components/AnalysisPanel';
-import { Sun, Moon } from 'lucide-react';
+import HelpPanel from './components/HelpPanel';
+import { Sun, Moon, RotateCcw, HelpCircle } from 'lucide-react';
 
 import { version } from '../package.json';
 
@@ -49,7 +50,8 @@ function AppContent() {
   const { state } = useData();
   const { fullWidth } = state;
 
-  const { theme } = useTheme();
+  const { theme, decreaseFontSize, increaseFontSize, resetFontSize } = useTheme();
+  const [showHelp, setShowHelp] = useState(false);
 
   return (
     <div className="h-screen w-screen flex flex-col overflow-hidden font-sans" style={{ background: 'var(--app-bg)', color: 'var(--text-1)' }}>
@@ -70,7 +72,45 @@ function AppContent() {
           </span>
         </div>
 
-        <div className="flex items-center gap-2">
+        <div className="flex items-center gap-3">
+          <button
+            onClick={() => setShowHelp(!showHelp)}
+            className={`p-1.5 rounded transition-colors ${showHelp ? 'bg-[var(--accent-surface)]' : 'hover:bg-[var(--active-bg)]'}`}
+            title="Help & Shortcuts"
+            style={{ color: showHelp ? 'var(--accent)' : 'var(--text-3)' }}
+          >
+            <HelpCircle size={18} />
+          </button>
+
+          <div className="flex items-center rounded-md p-1 gap-1" style={{ background: 'var(--surface-bg)' }}>
+            <button
+              onClick={decreaseFontSize}
+              className="p-1 px-2 rounded hover:bg-[var(--active-bg)] text-xs font-bold transition-colors"
+              title="Decrease Font Size"
+              style={{ color: 'var(--text-3)' }}
+            >
+              A-
+            </button>
+            <div className="w-[1px] h-3 bg-[var(--border-2)]" />
+            <button
+              onClick={resetFontSize}
+              className="p-1 rounded hover:bg-[var(--active-bg)] transition-colors"
+              title="Reset Font Size"
+              style={{ color: 'var(--text-3)' }}
+            >
+              <RotateCcw size={12} />
+            </button>
+            <div className="w-[1px] h-3 bg-[var(--border-2)]" />
+            <button
+              onClick={increaseFontSize}
+              className="p-1 px-2 rounded hover:bg-[var(--active-bg)] text-xs font-bold transition-colors"
+              title="Increase Font Size"
+              style={{ color: 'var(--text-3)' }}
+            >
+              A+
+            </button>
+          </div>
+
           <ThemeToggle />
         </div>
       </header>
@@ -102,6 +142,9 @@ function AppContent() {
       </div>
 
       <StatusBar />
+
+      {/* Global Help Panel */}
+      {showHelp && <HelpPanel onClose={() => setShowHelp(false)} />}
     </div>
   );
 }

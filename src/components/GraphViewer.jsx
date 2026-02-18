@@ -2,7 +2,6 @@ import React, { useState, useRef, useCallback, useMemo, useEffect } from 'react'
 import { useData } from '../context/DataContext';
 import ChartFactory, { CHART_TYPES } from './ChartFactory';
 import ProcessedDataViewer from './ProcessedDataViewer';
-import HelpPanel from './HelpPanel';
 import ResizablePanel from './ResizablePanel';
 import { getTransforms, buildProcessedData, getTransformById } from '../analysis/transforms';
 import { ZoomIn, ZoomOut, RotateCcw, Download, HelpCircle, X, Trash2, Table2, Maximize2, Minimize2 } from 'lucide-react';
@@ -19,10 +18,8 @@ const unaryTransforms = allTransforms.filter(t => !t.needsSecondColumn);
 const GraphViewer = () => {
   const { state, dispatch, actions, activeDataset } = useData();
   const { activeGraphConfig, selectedRegion } = state;
-  const [showHelp, setShowHelp] = useState(false);
   const [showData, setShowData] = useState(false);
   const [dataPanelHeight, setDataPanelHeight] = useState(300);
-  const [helpPanelHeight, setHelpPanelHeight] = useState(250);
   const [zoomLevel, setZoomLevel] = useState(1);
   const chartRef = useRef(null);
   const scrollContainerRef = useRef(null);
@@ -210,7 +207,7 @@ const GraphViewer = () => {
     const def = transformConfig ? getTransformById(transformConfig.id) : null;
     return (
       <div className="flex items-center gap-1">
-        <span className="text-[11px] uppercase font-bold tracking-widest" style={{ color: 'var(--text-4)' }}>{axisLabel}</span>
+        <span className="text-xs uppercase font-bold tracking-widest" style={{ color: 'var(--text-4)' }}>{axisLabel}</span>
         <select
           className="bg-transparent text-xs outline-none font-mono cursor-pointer"
           style={{ color: 'var(--text-2)' }}
@@ -219,7 +216,7 @@ const GraphViewer = () => {
         >
           {activeDataset.headers.map(h => <option key={h} value={h} style={{ background: 'var(--panel-bg)' }}>{h}</option>)}
         </select>
-        <span className="text-[11px]" style={{ color: 'var(--text-4)' }}>→</span>
+        <span className="text-xs" style={{ color: 'var(--text-4)' }}>→</span>
         <SmallSelect
           value={transformConfig?.id}
           onChange={(id) => setTransformId(axis, id)}
@@ -242,7 +239,7 @@ const GraphViewer = () => {
         {/* Outer wrap transform (e.g. ln of a×b) */}
         {transformConfig?.id && (
           <>
-            <span className="text-[11px]" style={{ color: 'var(--text-4)' }}>→</span>
+            <span className="text-xs" style={{ color: 'var(--text-4)' }}>→</span>
             <SmallSelect
               value={transformConfig?.outer}
               onChange={(id) => setOuterTransform(axis, id)}
@@ -266,7 +263,7 @@ const GraphViewer = () => {
         <div style={{ width: '1px', height: '16px', background: 'var(--border-2)' }} />
         <AxisBlock axis="y" axisLabel="Y" col={activeGraphConfig.yAxis} transformConfig={activeGraphConfig.yTransform} />
         {hasTransform && (
-          <span className="ml-auto text-[11px] font-mono px-1.5 py-0.5 rounded" style={{ background: 'var(--accent-surface)', color: 'var(--accent)' }}>
+          <span className="ml-auto text-xs font-mono px-1.5 py-0.5 rounded" style={{ background: 'var(--accent-surface)', color: 'var(--accent)' }}>
             Transformed
           </span>
         )}
@@ -278,7 +275,7 @@ const GraphViewer = () => {
         <Btn title="Zoom In" onClick={zoomIn} disabled={zoomLevel >= ZOOM_MAX}><ZoomIn size={13} /></Btn>
         <Btn title="Zoom Out" onClick={zoomOut} disabled={zoomLevel <= ZOOM_MIN}><ZoomOut size={13} /></Btn>
         <Btn title="Reset Zoom" onClick={resetZoom} disabled={!isZoomed}><RotateCcw size={12} /></Btn>
-        {isZoomed && <span className="text-[11px] font-mono" style={{ color: 'var(--accent)' }}>{zoomLevel.toFixed(1)}×</span>}
+        {isZoomed && <span className="text-xs font-mono" style={{ color: 'var(--accent)' }}>{zoomLevel.toFixed(1)}×</span>}
 
         <div style={{ width: '1px', height: '14px', background: 'var(--border-2)', margin: '0 2px' }} />
 
@@ -286,7 +283,7 @@ const GraphViewer = () => {
         <select
           value={activeGraphConfig.chartType || 'line'}
           onChange={e => dispatch({ type: actions.UPDATE_GRAPH_CONFIG, payload: { chartType: e.target.value } })}
-          className="text-[11px] font-mono px-1.5 py-0.5 rounded outline-none cursor-pointer"
+          className="text-xs font-mono px-1.5 py-0.5 rounded outline-none cursor-pointer"
           style={{ background: 'var(--surface-bg)', color: 'var(--text-2)', border: '1px solid var(--border-2)' }}
           title="Chart Type"
         >
@@ -304,7 +301,6 @@ const GraphViewer = () => {
         <Btn title="Clear Selection" onClick={() => dispatch({ type: actions.SET_SELECTED_REGION, payload: null })} disabled={!selectedRegion}>
           <Trash2 size={12} />
         </Btn>
-        <Btn active={showHelp} title="Help" onClick={() => setShowHelp(!showHelp)}><HelpCircle size={13} /></Btn>
 
         <div style={{ width: '1px', height: '14px', background: 'var(--border-2)', margin: '0 2px' }} />
 
@@ -314,7 +310,7 @@ const GraphViewer = () => {
         </Btn>
 
         {(isZoomed || selectedRegion) && (
-          <div className="ml-auto flex items-center gap-2 text-[11px] font-mono" style={{ color: 'var(--text-4)' }}>
+          <div className="ml-auto flex items-center gap-2 text-xs font-mono" style={{ color: 'var(--text-4)' }}>
             {isZoomed && <span className="px-1.5 py-0.5 rounded" style={{ background: 'var(--accent-surface)', color: 'var(--accent)' }}>Scroll to pan</span>}
             {selectedRegion && <span className="px-1.5 py-0.5 rounded" style={{ background: 'var(--accent-surface)', color: 'var(--success)' }}>Region</span>}
           </div>
@@ -343,13 +339,6 @@ const GraphViewer = () => {
       {showData && processed && (
         <ResizablePanel height={dataPanelHeight} setHeight={setDataPanelHeight} minHeight={150} maxHeight={600} onClose={() => setShowData(false)}>
           <ProcessedDataViewer data={processed.data} xKey={processed.xKey} yKey={processed.yKey} onClose={() => setShowData(false)} />
-        </ResizablePanel>
-      )}
-
-      {/* Help */}
-      {showHelp && (
-        <ResizablePanel height={helpPanelHeight} setHeight={setHelpPanelHeight} minHeight={150} maxHeight={600} onClose={() => setShowHelp(false)}>
-          <HelpPanel onClose={() => setShowHelp(false)} />
         </ResizablePanel>
       )}
     </div>

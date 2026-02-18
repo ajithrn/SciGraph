@@ -234,7 +234,7 @@ const DataUploader = () => {
     <div className="h-full flex flex-col">
       <div className="h-10 px-4 flex items-center justify-between shrink-0 z-10"
         style={{ borderBottom: '1px solid var(--border-1)', background: 'var(--panel-bg)' }}>
-        <span className="text-[11px] font-semibold uppercase tracking-wider" style={{ color: 'var(--text-4)' }}>Explorer</span>
+        <span className="text-xs font-semibold uppercase tracking-wider" style={{ color: 'var(--text-4)' }}>Explorer</span>
       </div>
 
       <div className="flex-1 flex flex-col min-h-0 py-2">
@@ -248,7 +248,7 @@ const DataUploader = () => {
               onClick={() => setIsExpanded(!isExpanded)}
             >
               {isExpanded ? <ChevronDown size={14} /> : <ChevronRight size={14} />}
-              <span className="text-[11px] font-bold uppercase tracking-wider">Workspace</span>
+              <span className="text-xs font-bold uppercase tracking-wider">Workspace</span>
             </button>
 
             {isExpanded && (
@@ -291,8 +291,8 @@ const DataUploader = () => {
               >
                 {recentExpanded ? <ChevronDown size={14} /> : <ChevronRight size={14} />}
                 <Clock size={12} />
-                <span className="text-[11px] font-bold uppercase tracking-wider">Recent</span>
-                <span className="text-[10px] font-mono ml-auto" style={{ color: 'var(--text-4)' }}>{recentDatasets.length}</span>
+                <span className="text-xs font-bold uppercase tracking-wider">Recent</span>
+                <span className="text-xs font-mono ml-auto" style={{ color: 'var(--text-4)' }}>{recentDatasets.length}</span>
               </button>
               {recentExpanded && (
                 <div className="mt-1 flex flex-col gap-0.5">
@@ -313,7 +313,7 @@ const DataUploader = () => {
                       >
                         <FileText size={14} className="shrink-0" />
                         <span className="truncate flex-1">{ds.name}</span>
-                        {ago && <span className="text-[10px] font-mono shrink-0" style={{ color: 'var(--text-4)' }}>{ago}</span>}
+                        {ago && <span className="text-xs font-mono shrink-0" style={{ color: 'var(--text-4)' }}>{ago}</span>}
                       </div>
                     );
                   })}
@@ -328,7 +328,7 @@ const DataUploader = () => {
       {/* ── Column Editor (Always Visible) ── */}
       {activeDataset && (
         <div className="px-3 py-2 space-y-1.5 shrink-0" style={{ borderTop: '1px solid var(--border-1)' }}>
-          <span className="text-[11px] font-bold uppercase tracking-wider block" style={{ color: 'var(--text-4)' }}>Columns</span>
+          <span className="text-xs font-bold uppercase tracking-wider block" style={{ color: 'var(--text-4)' }}>Columns</span>
           {activeDataset.headers.map(h => (
             <div key={h} className="flex items-center gap-1.5">
               {editingColumn === h ? (
@@ -369,8 +369,8 @@ const DataUploader = () => {
           >
             {showRawData ? <ChevronDown size={12} /> : <ChevronRight size={12} />}
             <Table size={12} />
-            <span className="text-[11px] font-bold uppercase tracking-wider">Data</span>
-            <span className="text-[10px] font-mono ml-auto" style={{ color: 'var(--text-4)' }}>{activeDataset.data.length} rows</span>
+            <span className="text-xs font-bold uppercase tracking-wider">Data</span>
+            <span className="text-xs font-mono ml-auto" style={{ color: 'var(--text-4)' }}>{activeDataset.data.length} rows</span>
           </button>
 
           {showRawData && (
@@ -382,7 +382,7 @@ const DataUploader = () => {
               mode="relative"
             >
               <div className="overflow-auto h-full">
-                <table className="w-full text-[10px] font-mono" style={{ borderCollapse: 'collapse' }}>
+                <table className="w-full text-xs font-mono" style={{ borderCollapse: 'collapse' }}>
                   <thead>
                     <tr>
                       {activeDataset.headers.map(h => (

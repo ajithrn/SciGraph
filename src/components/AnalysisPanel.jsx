@@ -75,15 +75,15 @@ const AnalysisPanel = () => {
     <div className="flex flex-col h-full">
       <div className="h-10 px-4 flex items-center shrink-0"
         style={{ borderBottom: '1px solid var(--border-1)', background: 'var(--panel-bg)' }}>
-        <span className="text-[11px] font-semibold uppercase tracking-wider" style={{ color: 'var(--text-4)' }}>Analysis</span>
+        <span className="text-xs font-semibold uppercase tracking-wider" style={{ color: 'var(--text-4)' }}>Analysis</span>
       </div>
 
       <div className="flex-1 overflow-y-auto p-4 space-y-5">
 
         {/* ── Method ── */}
         <div className="space-y-2">
-          <label className="text-[11px] font-bold uppercase tracking-widest block" style={{ color: 'var(--text-4)' }}>Method</label>
-          <p className="text-[11px] leading-relaxed" style={{ color: 'var(--text-3)' }}>Select the appropriate equation or model to apply to your data.</p>
+          <label className="text-xs font-bold uppercase tracking-widest block" style={{ color: 'var(--text-4)' }}>Method</label>
+          <p className="text-xs leading-relaxed" style={{ color: 'var(--text-3)' }}>Select the appropriate equation or model to apply to your data.</p>
           <div className="relative">
             <select
               className="w-full rounded-md py-2 px-3 text-xs outline-none appearance-none cursor-pointer transition-colors"
@@ -107,19 +107,19 @@ const AnalysisPanel = () => {
               {/* Formula card */}
               <div className="p-2.5 rounded" style={{ background: 'var(--app-bg)', border: '1px solid var(--border-1)' }}>
                 {activeModule.id === 'thermal-diffusivity' ? (
-                  <div className="font-mono text-[11px] text-center space-y-1">
+                  <div className="font-mono text-xs text-center space-y-1">
                     <div style={{ color: 'var(--accent)' }}>α = π · L² / B²</div>
-                    <div className="text-[11px]" style={{ color: 'var(--text-4)' }}>L = thickness (mm), B = slope from linear regression</div>
+                    <div className="text-xs" style={{ color: 'var(--text-4)' }}>L = thickness (mm), B = slope from linear regression</div>
                   </div>
                 ) : (
-                  <div className="text-center italic text-[11px]" style={{ color: 'var(--text-4)' }}>Standard calculation</div>
+                  <div className="text-center italic text-xs" style={{ color: 'var(--text-4)' }}>Standard calculation</div>
                 )}
               </div>
 
               {/* Inline help toggle */}
               {activeModule.help && (
                 <button
-                  className="flex items-center gap-1.5 text-[11px] transition-colors"
+                  className="flex items-center gap-1.5 text-xs transition-colors"
                   style={{ color: 'var(--text-4)' }}
                   onMouseEnter={e => e.currentTarget.style.color = 'var(--accent)'}
                   onMouseLeave={e => e.currentTarget.style.color = 'var(--text-4)'}
@@ -130,7 +130,7 @@ const AnalysisPanel = () => {
               )}
 
               {showHelp && activeModule.help && (
-                <div className="text-[11px] leading-relaxed p-2.5 rounded" style={{ color: 'var(--text-3)', background: 'var(--app-bg)', border: '1px solid var(--border-1)' }}>
+                <div className="text-xs leading-relaxed p-2.5 rounded" style={{ color: 'var(--text-3)', background: 'var(--app-bg)', border: '1px solid var(--border-1)' }}>
                   {activeModule.help}
                 </div>
               )}
@@ -141,7 +141,7 @@ const AnalysisPanel = () => {
         {/* ── Parameters ── */}
         {activeModule && (
           <div className="space-y-2">
-            <label className="text-[11px] font-bold uppercase tracking-widest block" style={{ color: 'var(--text-4)' }}>Parameters</label>
+            <label className="text-xs font-bold uppercase tracking-widest block" style={{ color: 'var(--text-4)' }}>Parameters</label>
 
             <div className="space-y-3 rounded-lg p-4" style={{ background: 'var(--app-bg)', border: '1px solid var(--border-1)' }}>
               {activeModule.inputs.map(input => (
@@ -158,14 +158,14 @@ const AnalysisPanel = () => {
                         onBlur={e => { e.currentTarget.style.borderColor = 'var(--border-1)'; e.currentTarget.nextSibling.style.borderColor = 'var(--border-1)'; }}
                         onChange={(e) => handleInputChange(activeModule.id, input.id, e.target.value)}
                       />
-                      <span className="px-2 py-1.5 text-[11px] font-mono rounded-r"
+                      <span className="px-2 py-1.5 text-xs font-mono rounded-r"
                         style={{ background: 'var(--surface-bg)', border: '1px solid var(--border-1)', color: 'var(--text-4)' }}>
                         {input.unit || '—'}
                       </span>
                     </div>
                   </div>
                   {input.description && (
-                    <p className="text-[11px] pl-0.5" style={{ color: 'var(--text-4)' }}>{input.description}</p>
+                    <p className="text-xs pl-0.5" style={{ color: 'var(--text-4)' }}>{input.description}</p>
                   )}
                 </div>
               ))}
@@ -185,12 +185,12 @@ const AnalysisPanel = () => {
                   </div>
                 </div>
                 {regression && (
-                  <div className="text-[11px] font-mono" style={{ color: 'var(--text-4)' }}>
+                  <div className="text-xs font-mono" style={{ color: 'var(--text-4)' }}>
                     R² = {regression.rSquared.toFixed(4)} · intercept = {regression.intercept.toExponential(2)}
                   </div>
                 )}
                 {!regression && (
-                  <p className="text-[11px]" style={{ color: 'var(--text-4)' }}>Drag on the graph to select a region — slope is auto-calculated.</p>
+                  <p className="text-xs" style={{ color: 'var(--text-4)' }}>Drag on the graph to select a region — slope is auto-calculated.</p>
                 )}
               </div>
             </div>
@@ -217,7 +217,7 @@ const AnalysisPanel = () => {
               <div className="rounded-lg overflow-hidden" style={{ border: '1px solid var(--border-1)', background: 'var(--app-bg)' }}>
                 <div className="px-3 py-1.5 flex justify-between items-center"
                   style={{ background: 'var(--surface-bg)', borderBottom: '1px solid var(--border-1)' }}>
-                  <span className="text-[11px] font-bold uppercase tracking-widest" style={{ color: 'var(--text-4)' }}>Result</span>
+                  <span className="text-xs font-bold uppercase tracking-widest" style={{ color: 'var(--text-4)' }}>Result</span>
                   {!analysisResults[activeModule.id].error && (
                     <span className="flex h-2 w-2 rounded-full" style={{ background: 'var(--success)', boxShadow: '0 0 6px rgba(16,185,129,0.4)' }}></span>
                   )}
@@ -235,7 +235,7 @@ const AnalysisPanel = () => {
                         {analysisResults[activeModule.id].unit}
                       </div>
                       {analysisResults[activeModule.id].formula && (
-                        <div className="text-[11px] font-mono pt-1" style={{ color: 'var(--text-4)' }}>
+                        <div className="text-xs font-mono pt-1" style={{ color: 'var(--text-4)' }}>
                           Formula: {analysisResults[activeModule.id].formula}
                         </div>
                       )}
