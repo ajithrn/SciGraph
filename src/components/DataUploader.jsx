@@ -30,8 +30,7 @@ const DataUploader = () => {
   const [editValue, setEditValue] = useState('');
   const [showRawData, setShowRawData] = useState(false);
 
-  // Check if active dataset has any auto-generated column names
-  const hasAutoHeaders = activeDataset?.headers.some(h => /^Column \d+$/.test(h));
+
 
   const startRename = (header) => {
     setEditingColumn(header);
@@ -58,15 +57,57 @@ const DataUploader = () => {
       let data = [];
       let headers = [];
 
-      if (extension === 'csv') {
-        // Parse as raw 2D array first to detect headers
-        const raw = Papa.parse(content, { header: false, dynamicTyping: true });
-        const rows = raw.data.filter(r => r.some(cell => cell !== null && cell !== ''));
+      try {
+        let rows = [];
+
+        if (extension === 'csv') {
+          const raw = Papa.parse(content, { header: false, dynamicTyping: true, skipEmptyLines: true });
+          rows = raw.data;
+        } else if (['xlsx', 'xls'].includes(extension)) {
+          const workbook = XLSX.read(content, { type: 'binary' });
+          const sheetName = workbook.SheetNames[0];
+          const sheet = workbook.Sheets[sheetName];
+          rows = XLSX.utils.sheet_to_json(sheet, { header: 1 });
+        }
 
         if (rows.length > 0) {
+          // Heuristic for header detection
           const firstRow = rows[0];
-          // Auto-detect: if every cell in the first row is a number, treat as headerless
-          const isHeaderless = firstRow.every(cell => typeof cell === 'number' && !isNaN(cell));
+          const secondRow = rows.length > 1 ? rows[1] : null;
+
+          let isHeaderless = false;
+
+          // Helper to check if a value is effectively numeric (ignoring empty)
+          const isNumeric = (val) => {
+            if (val === null || val === undefined || val === '') return true; // Ignore empty
+            return typeof val === 'number';
+          };
+
+          // 1. If first row has all numbers (ignoring empty/null), it's likely data
+          if (firstRow.every(isNumeric)) {
+            isHeaderless = true;
+          }
+          // 2. If we have a second row, compare types
+          else if (secondRow) {
+            // Get types, treating null/empty as 'unknown' (or compatible with anything)
+            const getType = (val) => {
+              if (val === null || val === undefined || val === '') return 'empty';
+              return typeof val;
+            };
+
+            const firstRowTypes = firstRow.map(getType);
+            const secondRowTypes = secondRow.map(getType);
+
+            // Check consistency: types match OR one of them is empty
+            const consistent = firstRowTypes.every((t1, i) => {
+              const t2 = secondRowTypes[i];
+              return t1 === t2 || t1 === 'empty' || t2 === 'empty';
+            });
+
+            if (consistent) {
+              isHeaderless = true;
+            }
+          }
 
           if (isHeaderless) {
             headers = firstRow.map((_, i) => `Column ${i + 1}`);
@@ -76,25 +117,22 @@ const DataUploader = () => {
               return obj;
             });
           } else {
-            // First row is headers — re-parse with header mode for proper typing
-            const result = Papa.parse(content, { header: true, dynamicTyping: true });
-            data = result.data;
-            headers = result.meta.fields || [];
+            headers = firstRow.map(String); // Ensure headers are strings
+            data = rows.slice(1).map(row => {
+              const obj = {};
+              headers.forEach((h, i) => { obj[h] = row[i]; });
+              return obj;
+            });
           }
-        }
-      } else if (extension === 'xlsx' || extension === 'xls') {
-        const workbook = XLSX.read(content, { type: 'binary' });
-        const sheetName = workbook.SheetNames[0];
-        const sheet = workbook.Sheets[sheetName];
-        data = XLSX.utils.sheet_to_json(sheet);
-        if (data.length > 0) headers = Object.keys(data[0]);
-      }
 
-      if (data.length > 0) {
-        dispatch({
-          type: actions.ADD_DATASET,
-          payload: { id: Date.now(), name: file.name, data, headers },
-        });
+          dispatch({
+            type: actions.ADD_DATASET,
+            payload: { id: Date.now(), name: file.name, data, headers },
+          });
+        }
+      } catch (err) {
+        console.error("Error parsing file:", err);
+        // Could add error notification dispatch here
       }
     };
 
@@ -285,8 +323,8 @@ const DataUploader = () => {
         </div>
       </div>
 
-      {/* ── Column Editor (for headerless CSV) ── */}
-      {hasAutoHeaders && activeDataset && (
+      {/* ── Column Editor (Always Visible) ── */}
+      {activeDataset && (
         <div className="px-3 py-2 space-y-1.5 shrink-0" style={{ borderTop: '1px solid var(--border-1)' }}>
           <span className="text-[11px] font-bold uppercase tracking-wider block" style={{ color: 'var(--text-4)' }}>Columns</span>
           {activeDataset.headers.map(h => (
