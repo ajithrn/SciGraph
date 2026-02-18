@@ -8,9 +8,10 @@
 - **Precision Plotting**: 6 chart types (Line, Scatter, Area, Step, Bar, Dots) with scientific styling.
 - **Data Transformation**: Advanced math (`ln`, `log`, `√`, `x²`, `1/x`), column arithmetic, and chaining.
 - **Data Analysis**: Automated linear regression, interactive area selection (ROI), and statistical summaries.
-- **Analysis Modules**: **Thermal Diffusivity**, **Basic Statistics**, **Area Under Curve**, **Peak Finder**.
+- **Dataset Management**: Hot-swapping between datasets, recent file history (last 10), and one-click deletion.
+- **Analysis Modules**: Thermal Diffusivity, Basic Statistics, Area Under Curve, Peak Finder, Moving Average, Savitzky-Golay.
 - **Modern UI**: Dark/Light themes, resizable panels, and global font scaling (A+/A-).
-- **Export**: Download publication-ready charts (PNG) and processed data tables.
+- **Export**: Download publication-ready charts (High-Res PNG) and processed/smoothed data (CSV).
 
 ## Documentation
 

@@ -69,6 +69,28 @@ Identifies the global maximum within the user-selected region.
 - **Output**: The exact $(x, y)$ coordinates of the data point with the highest $y$ value.
 - **Method**: Iterates through all points in the selection to find $P_{max} = \max \{ y_i \}$.
 
+### Data Smoothing
+
+Noise reduction filters for signal processing.
+
+#### Moving Average
+
+A simple low-pass filter that replaces each point with the average of its neighbors.
+
+- **Formula**: $\hat{y}_i = \frac{1}{2k+1} \sum_{j=-i}^{i} y_{i+j}$
+- **Best for**: Rapid noise reduction where peak preservation is not critical.
+- **Window Size (N)**: Total number of points averaging (must be odd). $k = (N-1)/2$.
+
+#### Savitzky-Golay
+
+A digital filter that smooths data by fitting adjacent points to a low-degree polynomial.
+
+- **Advantage**: Preserves higher moments of the data (peak height/width) better than moving averages.
+- **Parameters**:
+  - **Window Size**: Number of points (must be odd).
+  - **Order**: Degree of polynomial (typically 2 or 3).
+- **Implementation**: Uses pre-computed convolution coefficients.
+
 ## Extensibility
 
 New physical models can be added via the plugin registry:

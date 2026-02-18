@@ -114,7 +114,19 @@
     background: var(--text-4);
   }
 
+
   ::selection {
     background: rgba(59, 130, 246, 0.3);
   }
+}
+
+/* Utility to explicitly hide spinners */
+.no-spinner::-webkit-inner-spin-button,
+.no-spinner::-webkit-outer-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+.no-spinner {
+  -moz-appearance: textfield;
 }

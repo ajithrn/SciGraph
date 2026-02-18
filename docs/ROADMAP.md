@@ -36,26 +36,52 @@ For angular data — antenna patterns, crystal orientations, wind roses.
 2D data density visualization. Requires X, Y, and Z (color intensity) columns.
 **Complexity:** High — Recharts doesn't have native heatmap; would need custom rendering or a different library.
 
-## Future Analysis Features
+## Completed Features (v1.2)
 
-### Curve Fitting
+### Analysis Modules
 
-Fit common scientific functions (polynomial, exponential, Gaussian, power law) to data. Display best-fit parameters with uncertainties.
+- **Basic Statistics**: Mean, Median, StdDev, Min, Max of selected region.
+- **Area Under Curve**: Trapezoidal integration.
+- **Peak Finder**: Automatic detection of global maximum in selection.
+- **Data Smoothing**: Signal processing via **Moving Average** and **Savitzky-Golay** filters.
+- **Modular Architecture**: Plugin-based analysis system (`src/analysis/modules/`).
 
-### FFT / Spectral Analysis
+### Dataset Management
 
-Compute and display frequency spectrum of time-series data.
+- **Hot Swapping**: Instant dataset switching with intelligent axis reset.
+- **History**: Recent files list (last 10) with persistence and deletion support.
 
-### Statistical Summary
+### UI Enhancements
 
-Min, max, mean, median, std deviation, skewness, kurtosis for each column.
+- **Select All**: One-click selection of entire dataset.
+- **Input Controls**: Numeric steppers and keyboard support for parameters.
+- **Dynamic Results**: Custom Result displays (grids, formulas) per module.
+- **Empty States**: Clear guidance when no region is selected.
 
-### Data Interpolation / Smoothing
+## In Progress
 
-Spline interpolation, moving average, Savitzky-Golay filter.
+(None - moving to v1.3 Planning)
 
-### Export Options
+## Planned Features (v1.3+)
 
-- Export data as CSV/Excel with transforms applied
-- Export chart as SVG (vector) in addition to PNG
-- Export analysis results as formatted report
+### Advanced Analysis
+
+- **Derivatives**: 1st ($dy/dx$) and 2nd ($d^2y/dx^2$) derivatives for inflection point detection.
+- **Curve Fitting**:
+  - Polynomial ($Ax^2 + Bx + C$)
+  - Exponential Decay ($Ae^{-kt}$)
+  - Gaussian ($Ae^{-(x-\mu)^2/2\sigma^2}$)
+- **Baseline Correction**: Linear or spline-based background subtraction.
+- **FFT**: Spectral analysis.
+
+### Chart Types
+
+- **Error Bars**: Scatter plots with X/Y error ranges.
+- **Dual-Axis**: Overlay two datasets with different scales.
+- **Histogram**: Frequency distribution binning.
+- **Heatmap**: 2D density plots.
+
+### Data Management
+
+- **Sample Data**: Built-in CSVs for testing each analysis method.
+- **Export**: Save smoothed/fitted data as new CSVs.

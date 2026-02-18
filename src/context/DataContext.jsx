@@ -22,6 +22,7 @@ const initialState = {
 const ACTIONS = {
   ADD_DATASET: 'ADD_DATASET',
   SET_ACTIVE_DATASET: 'SET_ACTIVE_DATASET',
+  DELETE_RECENT_DATASET: 'DELETE_RECENT_DATASET', // New action
   UPDATE_GRAPH_CONFIG: 'UPDATE_GRAPH_CONFIG',
   SET_SELECTED_REGION: 'SET_SELECTED_REGION',
   RENAME_HEADER: 'RENAME_HEADER',
@@ -32,9 +33,9 @@ function dataReducer(state, action) {
   switch (action.type) {
     case ACTIONS.ADD_DATASET: {
       const newDatasets = [...state.datasets, action.payload];
-      // Persist last 5 to localStorage
+      // Persist last 10 to localStorage
       try {
-        const toStore = newDatasets.slice(-5).map(ds => ({
+        const toStore = newDatasets.slice(-10).map(ds => ({
           id: ds.id, name: ds.name, headers: ds.headers,
           data: ds.data.slice(0, 500), // limit rows for storage
           savedAt: Date.now(),
@@ -57,18 +58,44 @@ function dataReducer(state, action) {
         }
       };
     }
-    case ACTIONS.SET_ACTIVE_DATASET:
+    case ACTIONS.SET_ACTIVE_DATASET: {
+      const dataset = state.datasets.find(d => d.id === action.payload);
+      const currentX = state.activeGraphConfig.xAxis;
+      const currentY = state.activeGraphConfig.yAxis;
+
+      // Check if current axes exist in new dataset
+      const hasX = dataset?.headers.includes(currentX);
+      const hasY = dataset?.headers.includes(currentY);
+
       return {
         ...state,
         activeDatasetId: action.payload,
         selectedRegion: null,
         activeGraphConfig: {
           ...state.activeGraphConfig,
+          // Reset axes if they don't match, otherwise keep them (hot swap)
+          xAxis: hasX ? currentX : (dataset?.headers[0] || ''),
+          yAxis: hasY ? currentY : (dataset?.headers[1] || ''),
           zoomDomain: null,
           xTransform: null,
           yTransform: null,
         },
       };
+    }
+    case ACTIONS.DELETE_RECENT_DATASET: {
+      // This action mainly triggers a side effect of updating localStorage
+      // The state itself doesn't fundamentally change its active structure unless the deleted one was active?
+      // Actually, 'recentDatasets' is derived from localStorage in the component, but we can manage the deletion here if we want strict flux.
+      // However, since recentDatasets is managed via localStorage + useState hook in provider, we might just update LS there.
+      // But let's assume we want to update the in-mem datasets list if we treated them as 'recent' history?
+      // Wait, 'datasets' in state are *open* workspaces. 'recent' is valid storage.
+      // We'll handle LS update in the Provider helper for simplicity, or here.
+      // Let's keep the reducer focused on 'state.datasets' (Open files).
+      // If we want to delete from 'Open Files', we'd use REMOVE_DATASET.
+      // The user asked to delete from 'Recent'. Recent is stored in LS.
+      // So this might not be a reducer action for *state*, but we can return state as is.
+      return state;
+    }
     case ACTIONS.UPDATE_GRAPH_CONFIG:
       return {
         ...state,
@@ -147,8 +174,17 @@ export function DataProvider({ children }) {
     }
   };
 
+  const removeRecentDataset = (id) => {
+    try {
+      const stored = JSON.parse(localStorage.getItem('scigraph-recent') || '[]');
+      const updated = stored.filter(ds => ds.id !== id);
+      localStorage.setItem('scigraph-recent', JSON.stringify(updated));
+      setRecentDatasets(updated);
+    } catch (_) { /* ignore */ }
+  };
+
   return (
-    <DataContext.Provider value={{ state, dispatch, actions: ACTIONS, activeDataset, recentDatasets, loadRecentDataset }}>
+    <DataContext.Provider value={{ state, dispatch, actions: ACTIONS, activeDataset, recentDatasets, loadRecentDataset, removeRecentDataset }}>
       {children}
     </DataContext.Provider>
   );

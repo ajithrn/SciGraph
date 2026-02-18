@@ -1,5 +1,5 @@
 import React from 'react';
-import { Copy, X } from 'lucide-react';
+import { Copy, X, Download } from 'lucide-react';
 
 const ProcessedDataViewer = ({ data, xKey, yKey, onClose }) => {
   if (!data || data.length === 0) return null;
@@ -10,10 +10,29 @@ const ProcessedDataViewer = ({ data, xKey, yKey, onClose }) => {
     return v.toFixed(6);
   };
 
+  const generateCSV = () => {
+    const header = `${xKey},${yKey}`;
+    const rows = data.map(row => `${row[xKey]},${row[yKey]}`);
+    return [header, ...rows].join('\n');
+  };
+
   const handleCopy = () => {
     const header = `${xKey}\t${yKey}`;
     const rows = data.map(row => `${formatValue(row[xKey])}\t${formatValue(row[yKey])}`);
     navigator.clipboard.writeText([header, ...rows].join('\n'));
+  };
+
+  const handleExport = () => {
+    const csvContent = generateCSV();
+    const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement('a');
+    link.setAttribute('href', url);
+    link.setAttribute('download', `export_${xKey}_${yKey}.csv`);
+    link.style.visibility = 'hidden';
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
   };
 
   return (
@@ -27,13 +46,24 @@ const ProcessedDataViewer = ({ data, xKey, yKey, onClose }) => {
           Processed Data
         </span>
         <div className="flex items-center gap-1">
+          <button onClick={handleExport} className="p-1 rounded transition-colors"
+            style={{ color: 'var(--text-4)' }}
+            onMouseEnter={e => e.currentTarget.style.color = 'var(--accent)'}
+            onMouseLeave={e => e.currentTarget.style.color = 'var(--text-4)'}
+            title="Export as CSV">
+            <Download size={12} />
+          </button>
           <button onClick={handleCopy} className="p-1 rounded transition-colors"
             style={{ color: 'var(--text-4)' }}
+            onMouseEnter={e => e.currentTarget.style.color = 'var(--accent)'}
+            onMouseLeave={e => e.currentTarget.style.color = 'var(--text-4)'}
             title="Copy to clipboard">
             <Copy size={12} />
           </button>
           <button onClick={onClose} className="p-1 rounded transition-colors"
             style={{ color: 'var(--text-4)' }}
+            onMouseEnter={e => e.currentTarget.style.color = 'var(--error)'}
+            onMouseLeave={e => e.currentTarget.style.color = 'var(--text-4)'}
             title="Close">
             <X size={12} />
           </button>

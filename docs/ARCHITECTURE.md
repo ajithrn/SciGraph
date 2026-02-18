@@ -17,7 +17,8 @@ src/
 │   ├── GraphViewer.jsx      # Main chart + two-row toolbar + transform selectors
 │   ├── ChartFactory.jsx     # Recharts-based chart renderer
 │   ├── DataUploader.jsx     # File import, manual entry, column rename editor
-│   ├── AnalysisPanel.jsx    # Analysis toolkit (method, parameters, results)
+│   ├── AnalysisPanel.jsx    # Analysis toolkit (dynamic inputs, params, results)
+│   ├── HelpPanel.jsx        # Encapsulated documentation overlay
 │   └── ProcessedDataViewer.jsx  # Transformed data table overlay
 ├── context/
 │   └── DataContext.jsx      # Global state (datasets, graph config, transforms)

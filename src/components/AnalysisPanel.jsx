@@ -2,7 +2,63 @@ import React, { useState, useEffect } from 'react';
 import { useData } from '../context/DataContext';
 import { getAnalysisModules, calculateLinearRegression } from '../analysis/registry';
 import { applyTransform } from '../analysis/transforms';
-import { Sliders, Zap, HelpCircle } from 'lucide-react';
+import { Sliders, Zap, HelpCircle, Minus, Plus } from 'lucide-react';
+
+const NumberInput = ({ value, onChange, min, max, step = 1, unit, placeholder }) => {
+  const val = value === '' || value === undefined ? '' : parseFloat(value);
+
+  const update = (newValue) => {
+    let n = newValue;
+    if (min !== undefined) n = Math.max(min, n);
+    if (max !== undefined) n = Math.min(max, n);
+    // Round to avoid float errors (approximate to step precision)
+    n = Math.round(n * 10000000000) / 10000000000;
+    onChange(n);
+  };
+
+  const increment = () => update((typeof val === 'number' ? val : 0) + Number(step));
+  const decrement = () => update((typeof val === 'number' ? val : 0) - Number(step));
+
+  return (
+    <div className="flex items-center rounded overflow-hidden shadow-sm" style={{ border: '1px solid var(--border-1)', background: 'var(--surface-bg)' }}>
+      <button
+        className="px-1.5 py-1.5 hover:bg-black/5 dark:hover:bg-white/10 transition-colors active:scale-90"
+        style={{ color: 'var(--text-3)' }}
+        onClick={decrement}
+      >
+        <Minus size={10} />
+      </button>
+      <input
+        type="number"
+        className="w-14 px-1 py-1.5 text-xs font-mono text-center outline-none bg-transparent appearance-none no-spinner"
+        style={{ color: 'var(--text-1)' }}
+        placeholder={placeholder}
+        value={value}
+        onChange={e => onChange(e.target.value)}
+        onKeyDown={e => {
+          if (e.key === 'ArrowUp') { e.preventDefault(); increment(); }
+          if (e.key === 'ArrowDown') { e.preventDefault(); decrement(); }
+        }}
+        step={step}
+        min={min}
+        max={max}
+      />
+      <button
+        className="px-1.5 py-1.5 hover:bg-black/5 dark:hover:bg-white/10 transition-colors active:scale-90"
+        style={{ color: 'var(--text-3)' }}
+        onClick={increment}
+      >
+        <Plus size={10} />
+      </button>
+      {unit && (
+        <span className="px-1.5 py-1.5 text-[10px] font-mono border-l border-[var(--border-2)]"
+          style={{ background: 'var(--app-bg)', color: 'var(--text-4)' }}>
+          {unit}
+        </span>
+      )}
+    </div>
+  );
+};
 
 const AnalysisPanel = () => {
   const { state, activeDataset, dispatch, actions } = useData();
@@ -80,9 +136,25 @@ const AnalysisPanel = () => {
   };
 
   const handleInputChange = (moduleId, inputId, value) => {
+    // Determine if we should parse as float or keep as string
+    // Simplified check: if it parses to a valid number and doesn't look like a string ID (like 'moving_average'), stick with float. 
+    // Better: check against the module definition, but looking up module is expensive here. 
+    // Heuristic: if it's not a number string, keep as string.
+    const isNumber = !isNaN(parseFloat(value)) && isFinite(value);
+
+    // Actually, we should check the module definition to be safe, or just store everything as string and parse in calculate().
+    // The previous implementation used parseFloat(value). 
+    // Let's rely on the input type from the event if possible, but React onChange generic doesn't always give it.
+    // Safe bet: if value matches one of the known select options (string), keep string.
+
+    // For now, let's just store the value as-is if it's a string from a select (which we can infer if parseFloat returns NaN).
+    // But 'moving_average' parses to NaN. Perfect.
+
+    const parsed = isNumber ? parseFloat(value) : value;
+
     setInputValues(prev => ({
       ...prev,
-      [moduleId]: { ...prev[moduleId], [inputId]: parseFloat(value) }
+      [moduleId]: { ...prev[moduleId], [inputId]: parsed }
     }));
   };
 
@@ -180,19 +252,40 @@ const AnalysisPanel = () => {
                       <div className="flex items-center justify-between gap-3">
                         <label className="text-xs truncate" title={input.description || input.name} style={{ color: 'var(--text-2)' }}>{input.name}</label>
                         <div className="flex items-center gap-0">
-                          <input
-                            type="number"
-                            className="w-20 rounded-l px-2 py-1.5 text-xs font-mono text-right outline-none transition-colors"
-                            style={{ background: 'var(--surface-bg)', border: '1px solid var(--border-1)', color: 'var(--text-1)', borderRight: 'none' }}
-                            placeholder="0.0"
-                            onFocus={e => { e.currentTarget.style.borderColor = 'var(--accent)'; e.currentTarget.nextSibling.style.borderColor = 'var(--accent)'; }}
-                            onBlur={e => { e.currentTarget.style.borderColor = 'var(--border-1)'; e.currentTarget.nextSibling.style.borderColor = 'var(--border-1)'; }}
-                            onChange={(e) => handleInputChange(activeModule.id, input.id, e.target.value)}
-                          />
-                          <span className="px-2 py-1.5 text-xs font-mono rounded-r"
-                            style={{ background: 'var(--surface-bg)', border: '1px solid var(--border-1)', color: 'var(--text-4)' }}>
-                            {input.unit || '—'}
-                          </span>
+                          {input.type === 'select' ? (
+                            <div className="relative">
+                              <select
+                                className="w-32 rounded px-2 py-1.5 text-xs font-mono outline-none appearance-none cursor-pointer transition-colors"
+                                style={{
+                                  background: 'var(--surface-bg)',
+                                  border: '1px solid var(--border-1)',
+                                  color: 'var(--text-1)',
+                                  paddingRight: '1.5rem'
+                                }}
+                                value={inputValues[activeModule.id]?.[input.id] || input.defaultValue || ''}
+                                onChange={(e) => handleInputChange(activeModule.id, input.id, e.target.value)}
+                                onFocus={e => e.currentTarget.style.borderColor = 'var(--accent)'}
+                                onBlur={e => e.currentTarget.style.borderColor = 'var(--border-1)'}
+                              >
+                                {input.options?.map(opt => (
+                                  <option key={opt.value} value={opt.value}>{opt.label}</option>
+                                ))}
+                              </select>
+                              <div className="absolute right-2 top-1/2 -translate-y-1/2 pointer-events-none" style={{ color: 'var(--text-4)' }}>
+                                <svg width="8" height="5" viewBox="0 0 10 6" fill="none" stroke="currentColor" strokeWidth="1.5"><path d="M1 1L5 5L9 1" /></svg>
+                              </div>
+                            </div>
+                          ) : (
+                            <NumberInput
+                              value={inputValues[activeModule.id]?.[input.id] ?? (input.defaultValue ?? '')}
+                              onChange={(val) => handleInputChange(activeModule.id, input.id, val)}
+                              min={input.min}
+                              max={input.max}
+                              step={input.step || 1}
+                              unit={input.unit}
+                              placeholder={input.defaultValue}
+                            />
+                          )}
                         </div>
                       </div>
                       {input.description && (
@@ -260,7 +353,7 @@ const AnalysisPanel = () => {
                       {analysisResults[activeModule.id].error ? (
                         <span className="text-xs" style={{ color: 'var(--error)' }}>{analysisResults[activeModule.id].error}</span>
                       ) : activeModule.renderResult ? (
-                        activeModule.renderResult(analysisResults[activeModule.id])
+                        activeModule.renderResult(analysisResults[activeModule.id], dispatch)
                       ) : (
                         <div className="space-y-1">
                           <div className="text-2xl font-mono tracking-tight" style={{ color: 'var(--text-1)' }}>

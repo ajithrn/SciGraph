@@ -4,7 +4,7 @@ import ChartFactory, { CHART_TYPES } from './ChartFactory';
 import ProcessedDataViewer from './ProcessedDataViewer';
 import ResizablePanel from './ResizablePanel';
 import { getTransforms, buildProcessedData, getTransformById } from '../analysis/transforms';
-import { ZoomIn, ZoomOut, RotateCcw, Download, HelpCircle, X, Trash2, Table2, Maximize2, Minimize2 } from 'lucide-react';
+import { ZoomIn, ZoomOut, RotateCcw, Download, HelpCircle, X, Trash2, Table2, Maximize2, Minimize2, FileDown } from 'lucide-react';
 import html2canvas from 'html2canvas';
 
 const ZOOM_MIN = 1;
@@ -100,6 +100,30 @@ const GraphViewer = () => {
       link.click();
     } catch (err) { console.error('Download failed:', err); }
   }, [activeDataset]);
+
+  const exportCSV = useCallback(() => {
+    if (!processed || !processed.data) return;
+
+    const { xKey, yKey, data } = processed;
+    const header = `${xKey},${yKey}`;
+    const rows = data.map(row => {
+      // Handle potential nulls/undefined
+      const x = row[xKey] ?? '';
+      const y = row[yKey] ?? '';
+      return `${x},${y}`;
+    });
+    const csvContent = [header, ...rows].join('\n');
+
+    const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement('a');
+    link.setAttribute('href', url);
+    link.setAttribute('download', `${activeDataset.name.replace(/\.[^/.]+$/, '')}_processed.csv`);
+    link.style.visibility = 'hidden';
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+  }, [processed, activeDataset]);
 
   // ── Transform dispatchers ──
   const updateAxisTransform = (axis, updates) => {
@@ -294,8 +318,11 @@ const GraphViewer = () => {
 
         <div style={{ width: '1px', height: '14px', background: 'var(--border-2)', margin: '0 2px' }} />
 
-        <Btn title="View Processed Data" onClick={() => setShowData(!showData)} active={showData} disabled={!hasTransform && !showData}>
+        <Btn title={showData ? "Hide Data Table" : "View Data Table"} onClick={() => setShowData(!showData)} active={showData}>
           <Table2 size={13} />
+        </Btn>
+        <Btn title="Export Visible Data as CSV" onClick={exportCSV} disabled={!processed}>
+          <FileDown size={13} />
         </Btn>
         <Btn title="Download as PNG" onClick={downloadChart}><Download size={13} /></Btn>
         <Btn title="Clear Selection" onClick={() => dispatch({ type: actions.SET_SELECTED_REGION, payload: null })} disabled={!selectedRegion}>

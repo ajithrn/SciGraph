@@ -4,7 +4,7 @@ import * as XLSX from 'xlsx';
 import { useData } from '../context/DataContext';
 import ResizablePanel from './ResizablePanel';
 import {
-  Upload, FileText, ChevronDown, ChevronRight, Table, ArrowLeft, Plus, Pencil, Check, Clock, X
+  Upload, FileText, ChevronDown, ChevronRight, Table, ArrowLeft, Plus, Pencil, Check, Clock, X, Trash2
 } from 'lucide-react';
 
 function formatTimeAgo(timestamp) {
@@ -19,7 +19,7 @@ function formatTimeAgo(timestamp) {
 }
 
 const DataUploader = () => {
-  const { state, dispatch, actions, activeDataset, recentDatasets, loadRecentDataset } = useData();
+  const { state, dispatch, actions, activeDataset, recentDatasets, loadRecentDataset, removeRecentDataset } = useData();
   const [isExpanded, setIsExpanded] = useState(true);
   const [recentExpanded, setRecentExpanded] = useState(false);
   const [viewMode, setViewMode] = useState('explorer');
@@ -313,7 +313,14 @@ const DataUploader = () => {
                       >
                         <FileText size={14} className="shrink-0" />
                         <span className="truncate flex-1">{ds.name}</span>
-                        {ago && <span className="text-xs font-mono shrink-0" style={{ color: 'var(--text-4)' }}>{ago}</span>}
+                        {ago && <span className="text-xs font-mono shrink-0 opacity-50">{ago}</span>}
+                        <button
+                          className="p-1 rounded opacity-0 group-hover:opacity-100 transition-opacity hover:bg-red-500/10 hover:text-red-500"
+                          title="Remove from recent"
+                          onClick={(e) => { e.stopPropagation(); removeRecentDataset(ds.id); }}
+                        >
+                          <Trash2 size={12} />
+                        </button>
                       </div>
                     );
                   })}

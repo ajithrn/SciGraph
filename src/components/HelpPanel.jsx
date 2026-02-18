@@ -3,8 +3,33 @@ import ResizablePanel from './ResizablePanel';
 import {
   MousePointer, Move, ZoomIn, ZoomOut, RotateCcw,
   Trash2, Table2, FileUp, Sliders, Zap,
-  Download, HelpCircle, X, ChevronRight, Info, BarChart2
+  Download, HelpCircle, X, ChevronRight, Info, BarChart2,
+  FileText, Clock, FileDown, Copy
 } from 'lucide-react';
+
+// ... (skipping unchanged code) ...
+
+<div className="space-y-3">
+  <h4 className="text-xs font-bold text-[var(--text-4)] uppercase">Export</h4>
+  <ul className="space-y-2 text-xs">
+    <li className="flex items-center gap-3">
+      <div className="p-1.5 rounded bg-[var(--surface-bg)]"><Download size={14} /></div>
+      <span><strong>Download PNG:</strong> Save the current chart as an image.</span>
+    </li>
+    <li className="flex items-center gap-3">
+      <div className="p-1.5 rounded bg-[var(--surface-bg)]"><FileDown size={14} /></div>
+      <span><strong>Export CSV:</strong> Download the processed/transformed data.</span>
+    </li>
+    <li className="flex items-center gap-3">
+      <div className="p-1.5 rounded bg-[var(--surface-bg)]"><Table2 size={14} /></div>
+      <span><strong>Data Table:</strong> View data grid.</span>
+    </li>
+    <li className="flex items-center gap-3">
+      <div className="p-1.5 rounded bg-[var(--surface-bg)]"><Copy size={14} /></div>
+      <span><strong>Copy:</strong> Copy data to clipboard (from Data Table).</span>
+    </li>
+  </ul>
+</div>
 
 const HelpContent = ({ onClose }) => {
   return (
@@ -66,6 +91,34 @@ const HelpContent = ({ onClose }) => {
                 </p>
               </div>
             </div>
+          </section>
+
+          {/* 1.5 Dataset Management */}
+          <section className="space-y-4">
+            <div className="flex items-center gap-2 pb-2 border-b border-[var(--border-1)]">
+              <Table2 size={16} className="text-[var(--accent)]" />
+              <h3 className="text-sm font-bold uppercase tracking-widest text-[var(--text-1)]">Dataset Management</h3>
+            </div>
+            <ul className="space-y-3 text-xs text-[var(--text-3)]">
+              <li className="flex gap-3">
+                <div className="p-1.5 rounded bg-[var(--surface-bg)] shrink-0"><FileText size={14} /></div>
+                <div>
+                  <strong className="text-[var(--text-2)]">Hot Swapping:</strong> Switching between datasets automatically updates the graph. If column names match, the view is preserved; otherwise, it resets to default axes.
+                </div>
+              </li>
+              <li className="flex gap-3">
+                <div className="p-1.5 rounded bg-[var(--surface-bg)] shrink-0"><Clock size={14} /></div>
+                <div>
+                  <strong className="text-[var(--text-2)]">Recent Files:</strong> The sidebar keeps track of your last 10 datasets.
+                </div>
+              </li>
+              <li className="flex gap-3">
+                <div className="p-1.5 rounded bg-[var(--surface-bg)] shrink-0"><Trash2 size={14} /></div>
+                <div>
+                  <strong className="text-[var(--text-2)]">Manage History:</strong> Hover over a recent file and click the <Trash2 size={10} className="inline mx-1" /> icon to remove it from the list.
+                </div>
+              </li>
+            </ul>
           </section>
 
           {/* 2. Data Transformation */}
@@ -143,6 +196,10 @@ const HelpContent = ({ onClose }) => {
                     <div className="p-1.5 rounded bg-[var(--surface-bg)]"><Trash2 size={14} /></div>
                     <span>Click Trash to Clear Selection</span>
                   </li>
+                  <li className="flex items-center gap-3">
+                    <div className="p-1.5 rounded bg-[var(--surface-bg)]"><Move size={14} /></div>
+                    <span>Arrow Keys / Buttons for inputs</span>
+                  </li>
                 </ul>
               </div>
 
@@ -151,11 +208,15 @@ const HelpContent = ({ onClose }) => {
                 <ul className="space-y-2 text-xs">
                   <li className="flex items-center gap-3">
                     <div className="p-1.5 rounded bg-[var(--surface-bg)]"><Download size={14} /></div>
-                    <span>Download Chart button</span>
+                    <span><strong>Download PNG:</strong> Save current chart as image</span>
+                  </li>
+                  <li className="flex items-center gap-3">
+                    <div className="p-1.5 rounded bg-[var(--surface-bg)]"><FileDown size={14} /></div>
+                    <span><strong>Export CSV:</strong> Download processed data</span>
                   </li>
                   <li className="flex items-center gap-3">
                     <div className="p-1.5 rounded bg-[var(--surface-bg)]"><Table2 size={14} /></div>
-                    <span>View Processed Data Table</span>
+                    <span><strong>Data Table:</strong> View & Copy data</span>
                   </li>
                 </ul>
               </div>
@@ -200,8 +261,8 @@ const HelpContent = ({ onClose }) => {
           </section>
 
         </div>
-      </div>
-    </div>
+      </div >
+    </div >
   );
 };
 
