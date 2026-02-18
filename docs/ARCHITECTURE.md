@@ -9,7 +9,9 @@ SciGraph is designed with extensibility in mind. The core philosophy is to separ
 ```
 src/
 ├── analysis/               # Scientific computation layer
-│   ├── registry.js          # Analysis module registry & linear regression
+│   ├── modules/             # Individual analysis logic (e.g., stats.jsx)
+│   ├── registry.js          # Analysis module aggregator
+│   ├── utils.js             # Shared math utilities (linear regression)
 │   └── transforms.js        # Data transformation library (sqrt, ln, etc.)
 ├── components/              # UI Components
 │   ├── GraphViewer.jsx      # Main chart + two-row toolbar + transform selectors
@@ -64,37 +66,50 @@ Each transform defines:
 
 ### Analysis Registry (`src/analysis/registry.js`)
 
-Plugin-based system. Each module defines:
+Plugin-based system. Each analysis method is a self-contained module in `src/analysis/modules/`.
+
+Each module exports an object defining:
 
 - `id`, `name`, `description`, `inputs[]`
-- `calculate(data, inputs, { slope })` — computation function
-- `help` — optional workflow guide text
+- `calculate(data, inputs, { slope, regionData })` — computation function returning a result object.
+- `renderInfo(regression)` — (Optional) Function returning React node for custom formula display.
+- `renderResult(result)` — (Optional) Function returning React node for custom result formatting.
+- `required_analysis` — Array of dependencies (e.g., `['linear_regression']`).
 
-The regression `useEffect` in `AnalysisPanel` applies active transforms before filtering by the selected region, ensuring slope calculation works correctly in both raw and transformed views.
+The registry aggregates these modules and exports them for use by the `AnalysisPanel`.
 
 ## How to Extend
 
 ### Adding a New Calculation Module
 
-Add a new entry to `src/analysis/registry.js`:
+### Adding a New Calculation Module
+
+1. Create a new file in `src/analysis/modules/` (e.g., `youngsModulus.jsx`):
 
 ```javascript
-const youngsModulus = {
+import React from 'react';
+
+export const youngsModulus = {
   id: 'youngs-modulus',
   name: "Young's Modulus",
   description: 'Calculates Young\'s Modulus from stress-strain slope.',
   inputs: [
-    { id: 'area', name: 'Cross-sectional Area', type: 'number', unit: 'mm²' }
+    { id: 'area', name: 'Area', type: 'number', unit: 'mm²' }
   ],
   required_analysis: ['linear_regression'],
-  calculate: (data, inputs, analysisResults) => {
-    // ... logic
+  calculate: (data, inputs, ctx) => {
+    // ... logic using ctx.slope
     return { value: result, unit: 'Pa' };
-  }
+  },
+  // Optional: Custom result display
+  renderResult: (res) => (
+    <div className="font-bold">{res.value} {res.unit}</div>
+  )
 };
 ```
 
-Add it to the `registry` object. The UI will automatically generate the corresponding inputs and result display.
+1. Import and add it to the `registry` object in `src/analysis/registry.js`.
+2. The UI will automatically generate the corresponding inputs and result display.
 
 ### Adding a New Transform
 

@@ -44,6 +44,31 @@ $$ D = \frac{\pi L^2}{B^2} $$
 - $L$: Sample Thickness (mm). This value is entered manually in the analysis panel.
 - $B$: Slope of the linear regression from a plot of Phase vs $\sqrt{Frequency}$ (or similar linearized form).
 
+### Basic Statistics
+
+Calculates summary statistics for the selected data region ($Y$ values).
+
+- **Mean** ($\bar{y}$): Arithmetic average. $\bar{y} = \frac{1}{n}\sum_{i=1}^{n} y_i$
+- **Median**: Middle value of the sorted dataset.
+- **Standard Deviation** ($\sigma$): Measure of data dispersion. $\sigma = \sqrt{\frac{1}{n}\sum_{i=1}^{n} (y_i - \bar{y})^2}$ (Population Std Dev).
+- **Min/Max**: The lowest and highest $Y$ values in the selected range.
+
+### Area Under Curve (Integration)
+
+Computes the definite integral of the selected region using the **Trapezoidal Rule**.
+
+**Formula**:
+$$ Area = \sum_{i=0}^{n-1} \frac{y_i + y_{i+1}}{2} \cdot (x_{i+1} - x_i) $$
+
+This method approximates the area by dividing the region into trapezoids between consecutive data points.
+
+### Peak Finder
+
+Identifies the global maximum within the user-selected region.
+
+- **Output**: The exact $(x, y)$ coordinates of the data point with the highest $y$ value.
+- **Method**: Iterates through all points in the selection to find $P_{max} = \max \{ y_i \}$.
+
 ## Extensibility
 
 New physical models can be added via the plugin registry:
