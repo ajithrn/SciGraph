@@ -43,7 +43,7 @@ export const smoothing = {
       name: 'Window Size',
       type: 'number',
       defaultValue: 5,
-      min: 3,
+      min: 1,
       step: 2, // Check logic to ensure odd numbers
       description: 'Number of points to include in the average (odd number).'
     },
@@ -52,8 +52,8 @@ export const smoothing = {
       name: 'Polynomial Order (SG Only)',
       type: 'number',
       defaultValue: 2,
-      min: 2,
-      max: 5,
+      step: 1,
+      min: 0,
       description: 'Degree of polynomial to fit. Higher = follows curvature better.'
     }
   ],

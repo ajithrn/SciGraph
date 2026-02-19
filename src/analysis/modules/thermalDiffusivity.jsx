@@ -11,6 +11,9 @@ export const thermalDiffusivity = {
       name: 'Sample Thickness (L)',
       type: 'number',
       unit: 'mm',
+      step: 0.1,
+      min: 0.01,
+      defaultValue: 0.1,
       description: 'The thickness of the sample being measured, in millimeters.',
     },
   ],
@@ -29,7 +32,7 @@ export const thermalDiffusivity = {
     if (!L) return { error: 'Enter a valid sample thickness (L).' };
 
     const TD = (Math.PI * Math.pow(L, 2)) / Math.pow(B, 2);
-    
+
     return {
       value: TD,
       unit: 'mm²/s',
