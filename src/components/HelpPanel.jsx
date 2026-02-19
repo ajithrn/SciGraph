@@ -223,42 +223,108 @@ const HelpContent = ({ onClose }) => {
             </div>
           </section>
 
-          {/* 4. Chart Types */}
-          <section className="space-y-4">
-            <div className="flex items-center gap-2 pb-2 border-b border-[var(--border-1)]">
-              <BarChart2 size={16} className="text-[var(--accent)]" />
-              <h3 className="text-sm font-bold uppercase tracking-widest text-[var(--text-1)]">Chart Types</h3>
-            </div>
-            <p className="text-sm leading-relaxed text-[var(--text-3)]">
-              Use the dropdown menu in the toolbar to switch between visualization styles:
-            </p>
-            <div className="grid grid-cols-2 md:grid-cols-3 gap-3 text-xs text-[var(--text-3)]">
-              <div className="p-2 rounded bg-[var(--surface-bg)] border border-[var(--border-1)] text-center">
-                <strong>Line Only</strong>
-                <div className="text-[10px] text-[var(--text-4)] mt-1">Clean trend view</div>
+          {/* 4. Chart Types & Sample Data (Side by Side / Compact) */}
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-8 lg:gap-12">
+
+            {/* Chart Types */}
+            <section className="space-y-3">
+              <div className="flex items-center gap-2 pb-2 border-b border-[var(--border-1)]">
+                <BarChart2 size={16} className="text-[var(--accent)]" />
+                <h3 className="text-sm font-bold uppercase tracking-widest text-[var(--text-1)]">Chart Types</h3>
               </div>
-              <div className="p-2 rounded bg-[var(--surface-bg)] border border-[var(--border-1)] text-center">
-                <strong>Line + Dots</strong>
-                <div className="text-[10px] text-[var(--text-4)] mt-1">Best for small datasets</div>
+              <ul className="space-y-2 text-xs">
+                <li className="flex items-center gap-3">
+                  <div className="p-1 rounded bg-[var(--surface-bg)] shrink-0 w-6 h-6 flex items-center justify-center"><div className="w-3 h-0.5 bg-[var(--text-3)]" /></div>
+                  <div className="w-[4.5rem] font-bold text-[var(--text-1)] text-left shrink-0">Line Only:</div>
+                  <span className="text-[var(--text-3)] truncate">Clean trend view</span>
+                </li>
+                <li className="flex items-center gap-3">
+                  <div className="p-1 rounded bg-[var(--surface-bg)] shrink-0 w-6 h-6 flex items-center justify-center gap-0.5"><div className="w-1 h-0.5 bg-[var(--text-3)]" /><div className="w-1 h-1 rounded-full bg-[var(--accent)]" /><div className="w-1 h-0.5 bg-[var(--text-3)]" /></div>
+                  <div className="w-[4.5rem] font-bold text-[var(--text-1)] text-left shrink-0">Line+Dots:</div>
+                  <span className="text-[var(--text-3)] truncate">Best for small datasets</span>
+                </li>
+                <li className="flex items-center gap-3">
+                  <div className="p-1 rounded bg-[var(--surface-bg)] shrink-0 w-6 h-6 flex items-center justify-center gap-0.5"><div className="w-1 h-1 rounded-full bg-[var(--text-3)]" /><div className="w-1 h-1 rounded-full bg-[var(--accent)]" /></div>
+                  <div className="w-[4.5rem] font-bold text-[var(--text-1)] text-left shrink-0">Scatter:</div>
+                  <span className="text-[var(--text-3)] truncate">Correlation / Noise</span>
+                </li>
+                <li className="flex items-center gap-3">
+                  <div className="p-1 rounded bg-[var(--surface-bg)] shrink-0 w-6 h-6 flex items-end justify-center pb-1"><div className="w-3 h-2 bg-[var(--text-3)] opacity-50 border-t border-[var(--text-3)]" /></div>
+                  <div className="w-[4.5rem] font-bold text-[var(--text-1)] text-left shrink-0">Area:</div>
+                  <span className="text-[var(--text-3)] truncate">Volume / Accumulation</span>
+                </li>
+                <li className="flex items-center gap-3">
+                  <div className="p-1 rounded bg-[var(--surface-bg)] shrink-0 w-6 h-6 flex items-end justify-center pb-1"><div className="w-1.5 h-1 border-t border-r border-[var(--text-3)]" /><div className="w-1.5 h-2 border-t border-r border-[var(--text-3)]" /></div>
+                  <div className="w-[4.5rem] font-bold text-[var(--text-1)] text-left shrink-0">Step:</div>
+                  <span className="text-[var(--text-3)] truncate">Discrete changes</span>
+                </li>
+                <li className="flex items-center gap-3">
+                  <div className="p-1 rounded bg-[var(--surface-bg)] shrink-0 w-6 h-6 flex items-end justify-center gap-[1px] pb-1"><div className="w-[3px] h-1.5 bg-[var(--text-3)]" /><div className="w-[3px] h-2.5 bg-[var(--accent)]" /><div className="w-[3px] h-1 bg-[var(--text-3)]" /></div>
+                  <div className="w-[4.5rem] font-bold text-[var(--text-1)] text-left shrink-0">Bar Chart:</div>
+                  <span className="text-[var(--text-3)] truncate">Categorical comparison</span>
+                </li>
+              </ul>
+            </section>
+
+            {/* Sample Data */}
+            <section className="space-y-3">
+              <div className="flex items-center gap-2 pb-2 border-b border-[var(--border-1)]">
+                <Table2 size={16} className="text-[var(--accent)]" />
+                <h3 className="text-sm font-bold uppercase tracking-widest text-[var(--text-1)]">Sample Data</h3>
               </div>
-              <div className="p-2 rounded bg-[var(--surface-bg)] border border-[var(--border-1)] text-center">
-                <strong>Scatter</strong>
-                <div className="text-[10px] text-[var(--text-4)] mt-1">Correlation / Noise</div>
-              </div>
-              <div className="p-2 rounded bg-[var(--surface-bg)] border border-[var(--border-1)] text-center">
-                <strong>Area</strong>
-                <div className="text-[10px] text-[var(--text-4)] mt-1">Volume / Accumulation</div>
-              </div>
-              <div className="p-2 rounded bg-[var(--surface-bg)] border border-[var(--border-1)] text-center">
-                <strong>Step</strong>
-                <div className="text-[10px] text-[var(--text-4)] mt-1">Discrete changes</div>
-              </div>
-              <div className="p-2 rounded bg-[var(--surface-bg)] border border-[var(--border-1)] text-center">
-                <strong>Bar Chart</strong>
-                <div className="text-[10px] text-[var(--text-4)] mt-1">Categorical comparison</div>
-              </div>
-            </div>
-          </section>
+              <ul className="space-y-2 text-xs">
+
+                <li>
+                  <a href="https://raw.githubusercontent.com/ajithrn/SciGraph/main/samples/noisy_sine.csv" target="_blank" rel="noopener noreferrer" className="flex items-center gap-3 group transition-colors">
+                    <div className="p-1 rounded bg-[var(--surface-bg)] group-hover:bg-[var(--accent)] group-hover:text-white transition-colors shrink-0 w-6 h-6 flex items-center justify-center"><Download size={14} className="text-[var(--text-4)] group-hover:text-white transition-colors" /></div>
+                    <div className="w-[6rem] font-bold text-[var(--text-1)] text-left shrink-0 group-hover:text-[var(--accent)] transition-colors">Noisy Sine:</div>
+                    <span className="text-[var(--text-3)] truncate">Test data with noise</span>
+                  </a>
+                </li>
+
+                <li>
+                  <a href="https://raw.githubusercontent.com/ajithrn/SciGraph/main/samples/exponential_decay.csv" target="_blank" rel="noopener noreferrer" className="flex items-center gap-3 group transition-colors">
+                    <div className="p-1 rounded bg-[var(--surface-bg)] group-hover:bg-[var(--accent)] group-hover:text-white transition-colors shrink-0 w-6 h-6 flex items-center justify-center"><Download size={14} className="text-[var(--text-4)] group-hover:text-white transition-colors" /></div>
+                    <div className="w-[6rem] font-bold text-[var(--text-1)] text-left shrink-0 group-hover:text-[var(--accent)] transition-colors">Exp. Decay:</div>
+                    <span className="text-[var(--text-3)] truncate">Rate constant demo</span>
+                  </a>
+                </li>
+
+                <li>
+                  <a href="https://raw.githubusercontent.com/ajithrn/SciGraph/main/samples/polynomial_curve.csv" target="_blank" rel="noopener noreferrer" className="flex items-center gap-3 group transition-colors">
+                    <div className="p-1 rounded bg-[var(--surface-bg)] group-hover:bg-[var(--accent)] group-hover:text-white transition-colors shrink-0 w-6 h-6 flex items-center justify-center"><Download size={14} className="text-[var(--text-4)] group-hover:text-white transition-colors" /></div>
+                    <div className="w-[6rem] font-bold text-[var(--text-1)] text-left shrink-0 group-hover:text-[var(--accent)] transition-colors">Polynomial:</div>
+                    <span className="text-[var(--text-3)] truncate">Trend analysis</span>
+                  </a>
+                </li>
+
+                <li>
+                  <a href="https://raw.githubusercontent.com/ajithrn/SciGraph/main/samples/random_distribution.csv" target="_blank" rel="noopener noreferrer" className="flex items-center gap-3 group transition-colors">
+                    <div className="p-1 rounded bg-[var(--surface-bg)] group-hover:bg-[var(--accent)] group-hover:text-white transition-colors shrink-0 w-6 h-6 flex items-center justify-center"><Download size={14} className="text-[var(--text-4)] group-hover:text-white transition-colors" /></div>
+                    <div className="w-[6rem] font-bold text-[var(--text-1)] text-left shrink-0 group-hover:text-[var(--accent)] transition-colors">Random Dist.:</div>
+                    <span className="text-[var(--text-3)] truncate">Scatter plot demo</span>
+                  </a>
+                </li>
+
+                <li>
+                  <a href="https://raw.githubusercontent.com/ajithrn/SciGraph/main/samples/thermal_diffusivity.csv" target="_blank" rel="noopener noreferrer" className="flex items-center gap-3 group transition-colors">
+                    <div className="p-1 rounded bg-[var(--surface-bg)] group-hover:bg-[var(--accent)] group-hover:text-white transition-colors shrink-0 w-6 h-6 flex items-center justify-center"><Download size={14} className="text-[var(--text-4)] group-hover:text-white transition-colors" /></div>
+                    <div className="w-[6rem] font-bold text-[var(--text-1)] text-left shrink-0 group-hover:text-[var(--accent)] transition-colors">Diffusivity:</div>
+                    <span className="text-[var(--text-3)] truncate">Scientific test case</span>
+                  </a>
+                </li>
+
+                <li>
+                  <a href="https://raw.githubusercontent.com/ajithrn/SciGraph/main/samples/chromatography_peaks.csv" target="_blank" rel="noopener noreferrer" className="flex items-center gap-3 group transition-colors">
+                    <div className="p-1 rounded bg-[var(--surface-bg)] group-hover:bg-[var(--accent)] group-hover:text-white transition-colors shrink-0 w-6 h-6 flex items-center justify-center"><Download size={14} className="text-[var(--text-4)] group-hover:text-white transition-colors" /></div>
+                    <div className="w-[6rem] font-bold text-[var(--text-1)] text-left shrink-0 group-hover:text-[var(--accent)] transition-colors">Peaks / Area:</div>
+                    <span className="text-[var(--text-3)] truncate">Chromatography demo</span>
+                  </a>
+                </li>
+
+              </ul>
+            </section>
+          </div>
 
         </div>
       </div >
