@@ -3,6 +3,7 @@ import { basicStats } from './modules/basicStats.jsx';
 import { areaUnderCurve } from './modules/areaUnderCurve.jsx';
 import { peakFinder } from './modules/peakFinder.jsx';
 import { smoothing } from './modules/smoothing.jsx';
+import { derivatives } from './modules/derivatives.jsx';
 import { calculateLinearRegression } from './utils';
 
 // Analysis Registry
@@ -12,6 +13,7 @@ const registry = {
   [areaUnderCurve.id]: areaUnderCurve,
   [peakFinder.id]: peakFinder,
   [smoothing.id]: smoothing,
+  [derivatives.id]: derivatives,
 };
 
 export function getAnalysisModules() {

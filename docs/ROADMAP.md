@@ -44,6 +44,7 @@ For angular data — antenna patterns, crystal orientations, wind roses.
 - **Area Under Curve**: Trapezoidal integration.
 - **Peak Finder**: Automatic detection of global maximum in selection.
 - **Data Smoothing**: Signal processing via **Moving Average** and **Savitzky-Golay** filters.
+- **Derivatives**: 1st ($dy/dx$) and 2nd ($d^2y/dx^2$) derivatives via finite differences.
 - **Modular Architecture**: Plugin-based analysis system (`src/analysis/modules/`).
 
 ### Dataset Management
@@ -66,7 +67,6 @@ For angular data — antenna patterns, crystal orientations, wind roses.
 
 ### Advanced Analysis
 
-- **Derivatives**: 1st ($dy/dx$) and 2nd ($d^2y/dx^2$) derivatives for inflection point detection.
 - **Curve Fitting**:
   - Polynomial ($Ax^2 + Bx + C$)
   - Exponential Decay ($Ae^{-kt}$)
@@ -83,5 +83,4 @@ For angular data — antenna patterns, crystal orientations, wind roses.
 
 ### Data Management
 
-- **Sample Data**: Built-in CSVs for testing each analysis method.
 - **Export**: Save smoothed/fitted data as new CSVs.

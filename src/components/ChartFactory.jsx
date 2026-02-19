@@ -116,7 +116,7 @@ const ChartFactory = ({ data, config }) => {
   // ── Line / Line+Dots ──
   if (chartType === 'line' || chartType === 'line-dots') {
     return (
-      <ResponsiveContainer width="100%" height="100%">
+      <ResponsiveContainer width="100%" height="100%" minWidth={0} minHeight={0}>
         <LineChart data={data} {...mouseHandlers} margin={margin}>
           <CartesianGrid strokeDasharray="3 3" stroke={colors.grid} opacity={0.7} />
           <XAxis {...xAxisProps}>
@@ -146,7 +146,7 @@ const ChartFactory = ({ data, config }) => {
   // ── Scatter (dots only) ──
   if (chartType === 'scatter') {
     return (
-      <ResponsiveContainer width="100%" height="100%">
+      <ResponsiveContainer width="100%" height="100%" minWidth={0} minHeight={0}>
         <ScatterChart {...mouseHandlers} margin={margin}>
           <CartesianGrid strokeDasharray="3 3" stroke={colors.grid} opacity={0.7} />
           <XAxis {...xAxisProps} name={xLabel}>
@@ -173,7 +173,7 @@ const ChartFactory = ({ data, config }) => {
   // ── Area ──
   if (chartType === 'area') {
     return (
-      <ResponsiveContainer width="100%" height="100%">
+      <ResponsiveContainer width="100%" height="100%" minWidth={0} minHeight={0}>
         <AreaChart data={data} {...mouseHandlers} margin={margin}>
           <defs>
             <linearGradient id="areaGradient" x1="0" y1="0" x2="0" y2="1">
@@ -210,7 +210,7 @@ const ChartFactory = ({ data, config }) => {
   // ── Step ──
   if (chartType === 'step') {
     return (
-      <ResponsiveContainer width="100%" height="100%">
+      <ResponsiveContainer width="100%" height="100%" minWidth={0} minHeight={0}>
         <LineChart data={data} {...mouseHandlers} margin={margin}>
           <CartesianGrid strokeDasharray="3 3" stroke={colors.grid} opacity={0.7} />
           <XAxis {...xAxisProps}>
@@ -240,7 +240,7 @@ const ChartFactory = ({ data, config }) => {
   // ── Bar ──
   if (chartType === 'bar') {
     return (
-      <ResponsiveContainer width="100%" height="100%">
+      <ResponsiveContainer width="100%" height="100%" minWidth={0} minHeight={0}>
         <BarChart data={data} {...mouseHandlers} margin={margin}>
           <CartesianGrid strokeDasharray="3 3" stroke={colors.grid} opacity={0.7} />
           <XAxis {...xAxisProps}>

@@ -91,6 +91,26 @@ A digital filter that smooths data by fitting adjacent points to a low-degree po
   - **Order**: Degree of polynomial (typically 2 or 3).
 - **Implementation**: Uses pre-computed convolution coefficients.
 
+- **Implementation**: Uses pre-computed convolution coefficients.
+
+### Derivative Analysis
+
+Calculates the rate of change or curvature of the signal using **Finite Difference** methods.
+
+#### 1st Derivative ($dy/dx$)
+
+Represents the slope of the tangent at each point. Useful for finding inflection points.
+
+- **Method**: Central Difference (for interior points).
+- **Formula**: $y'_i \approx \frac{y_{i+1} - y_{i-1}}{x_{i+1} - x_{i-1}}$
+
+#### 2nd Derivative ($d^2y/dx^2$)
+
+Represents the concavity or curvature. Useful for peak detection (negative curvature) and inflection points (zero crossing).
+
+- **Method**: Central Difference.
+- **Formula**: $y''_i \approx \frac{y_{i+1} - 2y_i + y_{i-1}}{(x_{i+1} - x_i)^2}$
+
 ## Extensibility
 
 New physical models can be added via the plugin registry:

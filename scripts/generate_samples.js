@@ -56,4 +56,15 @@ for (let i = 0; i < 100; i++) {
 fs.writeFileSync(path.join(samplesDir, 'random_distribution.csv'), distData);
 console.log('Created random_distribution.csv');
 
+// 5. Polynomial Curve (For Derivatives)
+let polyData = 'x,y\n';
+for (let i = -100; i <= 100; i++) {
+    const x = i * 0.05;
+    // y = 0.5x^3 - 2x^2 + x + 5
+    const y = 0.5 * Math.pow(x, 3) - 2 * Math.pow(x, 2) + x + 5;
+    polyData += `${x.toFixed(3)},${y.toFixed(4)}\n`;
+}
+fs.writeFileSync(path.join(samplesDir, 'polynomial_curve.csv'), polyData);
+console.log('Created polynomial_curve.csv');
+
 console.log('All sample files generated successfully in samples/ directory.');

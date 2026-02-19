@@ -9,7 +9,7 @@ SciGraph is designed with extensibility in mind. The core philosophy is to separ
 ```
 src/
 ├── analysis/               # Scientific computation layer
-│   ├── modules/             # Individual analysis logic (e.g., stats.jsx)
+│   ├── modules/             # Individual analysis logic (e.g., stats.jsx, derivatives.jsx)
 │   ├── registry.js          # Analysis module aggregator
 │   ├── utils.js             # Shared math utilities (linear regression)
 │   └── transforms.js        # Data transformation library (sqrt, ln, etc.)
@@ -24,6 +24,8 @@ src/
 │   └── DataContext.jsx      # Global state (datasets, graph config, transforms)
 └── styles/
     └── index.css            # Design tokens, theme variables, base styles
+samples/
+└── ...                      # Included CSV files for testing analysis methods
 ```
 
 ## Data Flow
@@ -80,8 +82,6 @@ Each module exports an object defining:
 The registry aggregates these modules and exports them for use by the `AnalysisPanel`.
 
 ## How to Extend
-
-### Adding a New Calculation Module
 
 ### Adding a New Calculation Module
 

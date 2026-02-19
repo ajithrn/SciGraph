@@ -129,7 +129,12 @@ const DataUploader = () => {
 
           dispatch({
             type: actions.ADD_DATASET,
-            payload: { id: Date.now(), name: file.name, data, headers },
+            payload: {
+              id: (crypto && crypto.randomUUID) ? crypto.randomUUID() : Date.now().toString() + '_' + Math.random().toString(36).substring(2, 9),
+              name: file.name,
+              data,
+              headers
+            },
           });
         }
       } catch (err) {
@@ -147,7 +152,12 @@ const DataUploader = () => {
     if (validData.length === 0) return;
     dispatch({
       type: actions.ADD_DATASET,
-      payload: { id: Date.now(), name: 'Manual Data', data: validData, headers: manualHeaders }
+      payload: {
+        id: (crypto && crypto.randomUUID) ? crypto.randomUUID() : Date.now().toString() + '_' + Math.random().toString(36).substring(2, 9),
+        name: 'Manual Data',
+        data: validData,
+        headers: manualHeaders
+      }
     });
     setManualData([{ x: '', y: '' }]);
     setViewMode('explorer');
@@ -271,7 +281,7 @@ const DataUploader = () => {
                       onClick={() => dispatch({ type: actions.SET_ACTIVE_DATASET, payload: ds.id })}
                     >
                       <FileText size={14} className="shrink-0" />
-                      <span className="truncate">{ds.name}</span>
+                      <span className="flex-1 text-[11px] leading-tight break-words">{ds.name}</span>
                     </div>
                   ))
                 )}
@@ -312,7 +322,7 @@ const DataUploader = () => {
                         onClick={() => loadRecentDataset(ds)}
                       >
                         <FileText size={14} className="shrink-0" />
-                        <span className="truncate flex-1">{ds.name}</span>
+                        <span className="flex-1 text-[11px] leading-tight break-words">{ds.name}</span>
                         {ago && <span className="text-xs font-mono shrink-0 opacity-50">{ago}</span>}
                         <button
                           className="p-1 rounded opacity-0 group-hover:opacity-100 transition-opacity hover:bg-red-500/10 hover:text-red-500"
@@ -402,9 +412,9 @@ const DataUploader = () => {
                   </thead>
                   <tbody>
                     {activeDataset.data.map((row, i) => (
-                      <tr key={i}>
+                      <tr key={`row-${i}`}>
                         {activeDataset.headers.map(h => (
-                          <td key={h} className="px-2 py-0.5" style={{ color: 'var(--text-2)', borderBottom: '1px solid var(--border-1)' }}>
+                          <td key={`cell-${i}-${h}`} className="px-2 py-0.5" style={{ color: 'var(--text-2)', borderBottom: '1px solid var(--border-1)' }}>
                             {row[h] != null ? (typeof row[h] === 'number' ? row[h].toPrecision(4) : row[h]) : '—'}
                           </td>
                         ))}

@@ -197,7 +197,7 @@ const AnalysisPanel = () => {
               {/* Formula card - Only show if module provides renderInfo */}
               {activeModule.renderInfo && (
                 <div className="p-2.5 rounded" style={{ background: 'var(--app-bg)', border: '1px solid var(--border-1)' }}>
-                  {activeModule.renderInfo(regression)}
+                  {activeModule.renderInfo(regression, inputValues[activeModule.id])}
                 </div>
               )}
 
