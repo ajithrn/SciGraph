@@ -32,17 +32,33 @@ The application performs automatic least-squares fitting on user-selected region
 - **Output**: Slope ($B$) and Intercept ($A$) of the best-fit line $y = Bx + A$.
 - **Precision**: Calculations use double-precision floating-point arithmetic.
 
-### Thermal Diffusivity ($D$)
+### Thermal Diffusivity ($\alpha$)
 
-A specialized module for calculating thermal diffusivity based on the Angstrom method or similar linear relationships.
+A specialized module for calculating thermal diffusivity using the laser flash analysis (LFA) method. Supports two test configurations selectable via a **Test Method** dropdown.
+
+#### Direct (Transmission) Method
+
+The laser pulse heats the **front face** of the sample. The temperature rise is recorded on the **rear face** and the slope of the linear region is used.
 
 **Formula**:
-$$ D = \frac{\pi L^2}{B^2} $$
+$$ \alpha = \frac{\pi L^2}{B^2} $$
 
 **Variables**:
 
-- $L$: Sample Thickness (mm). This value is entered manually in the analysis panel.
-- $B$: Slope of the linear regression from a plot of Phase vs $\sqrt{Frequency}$ (or similar linearized form).
+- $L$: Sample thickness (mm) — entered manually.
+- $B$: Slope from linear regression of the temperature-time rise curve.
+
+#### Indirect (Reflection) Method
+
+The laser pulse and temperature measurement both occur on the **same front surface**. Used when the rear face is inaccessible or when measuring through a medium/substrate.
+
+**Formula**:
+$$ \alpha = L^2 \cdot F_c $$
+
+**Variables**:
+
+- $L$: Sample thickness (mm) — entered manually.
+- $F_c$: Multiplier factor — entered manually.
 
 ### Basic Statistics
 

@@ -191,34 +191,73 @@ const AnalysisPanel = () => {
           </div>
 
           {activeModule && (
-            <div className="rounded-md p-3 space-y-3" style={{ border: '1px solid var(--border-1)', background: 'var(--surface-bg)' }}>
-              <p className="text-xs leading-relaxed" style={{ color: 'var(--text-2)' }}>{activeModule.description}</p>
-
-              {/* Formula card - Only show if module provides renderInfo */}
-              {activeModule.renderInfo && (
-                <div className="p-2.5 rounded" style={{ background: 'var(--app-bg)', border: '1px solid var(--border-1)' }}>
-                  {activeModule.renderInfo(regression, inputValues[activeModule.id])}
+            <div className="space-y-6 mt-6">
+              {/* Top Level Selects */}
+              {activeModule.inputs.filter(i => i.type === 'select').length > 0 && (
+                <div className="space-y-3">
+                  {activeModule.inputs.filter(i => i.type === 'select').map(input => (
+                    <div key={input.id} className="space-y-2">
+                      <label className="text-xs font-bold uppercase tracking-widest block" style={{ color: 'var(--text-4)' }}>{input.name}</label>
+                      <div className="relative">
+                        <select
+                          className="w-full rounded-md py-2.5 px-3 text-xs outline-none appearance-none cursor-pointer transition-colors"
+                          style={{
+                            background: 'var(--app-bg)',
+                            border: '1px solid var(--border-1)',
+                            color: 'var(--text-1)'
+                          }}
+                          value={inputValues[activeModule.id]?.[input.id] || input.defaultValue || ''}
+                          onChange={(e) => handleInputChange(activeModule.id, input.id, e.target.value)}
+                          onFocus={e => e.currentTarget.style.borderColor = 'var(--accent)'}
+                          onBlur={e => e.currentTarget.style.borderColor = 'var(--border-1)'}
+                        >
+                          {input.options?.map(opt => (
+                            <option key={opt.value} value={opt.value}>{opt.label}</option>
+                          ))}
+                        </select>
+                        <div className="absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none" style={{ color: 'var(--text-4)' }}>
+                          <svg width="10" height="6" viewBox="0 0 10 6" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"><path d="M1 1L5 5L9 1" /></svg>
+                        </div>
+                      </div>
+                      {input.description && (
+                        <p className="text-xs leading-relaxed" style={{ color: 'var(--text-3)' }}>{input.description}</p>
+                      )}
+                    </div>
+                  ))}
                 </div>
               )}
 
-              {/* Inline help toggle */}
-              {activeModule.help && (
-                <button
-                  className="flex items-center gap-1.5 text-xs transition-colors"
-                  style={{ color: 'var(--text-4)' }}
-                  onMouseEnter={e => e.currentTarget.style.color = 'var(--accent)'}
-                  onMouseLeave={e => e.currentTarget.style.color = 'var(--text-4)'}
-                  onClick={() => setShowHelp(!showHelp)}
-                >
-                  <HelpCircle size={11} /> {showHelp ? 'Hide' : 'Show'} workflow guide
-                </button>
-              )}
+              <div className="rounded-md p-4 space-y-4 shadow-sm" style={{ border: '1px solid var(--border-1)', background: 'var(--surface-bg)' }}>
+                <p className="text-xs leading-relaxed whitespace-pre-wrap" style={{ color: 'var(--text-2)' }}>
+                  {typeof activeModule.description === 'function' ? activeModule.description(regression, inputValues[activeModule.id]) : activeModule.description}
+                </p>
 
-              {showHelp && activeModule.help && (
-                <div className="text-xs leading-relaxed p-2.5 rounded" style={{ color: 'var(--text-3)', background: 'var(--app-bg)', border: '1px solid var(--border-1)' }}>
-                  {activeModule.help}
-                </div>
-              )}
+                {/* Formula card - Only show if module provides renderInfo */}
+                {activeModule.renderInfo && (
+                  <div className="p-3 rounded" style={{ background: 'var(--app-bg)', border: '1px solid var(--border-1)' }}>
+                    {activeModule.renderInfo(regression, inputValues[activeModule.id])}
+                  </div>
+                )}
+
+                {/* Inline help toggle */}
+                {activeModule.help && (
+                  <button
+                    className="flex items-center gap-1.5 text-xs transition-colors"
+                    style={{ color: 'var(--text-4)' }}
+                    onMouseEnter={e => e.currentTarget.style.color = 'var(--accent)'}
+                    onMouseLeave={e => e.currentTarget.style.color = 'var(--text-4)'}
+                    onClick={() => setShowHelp(!showHelp)}
+                  >
+                    <HelpCircle size={11} /> {showHelp ? 'Hide' : 'Show'} workflow guide
+                  </button>
+                )}
+
+                {showHelp && activeModule.help && (
+                  <div className="text-xs leading-relaxed p-2.5 rounded" style={{ color: 'var(--text-3)', background: 'var(--app-bg)', border: '1px solid var(--border-1)' }}>
+                    {typeof activeModule.help === 'function' ? activeModule.help(regression, inputValues[activeModule.id]) : activeModule.help}
+                  </div>
+                )}
+              </div>
             </div>
           )}
         </div>
@@ -242,50 +281,28 @@ const AnalysisPanel = () => {
         ) : (
           <>
             {/* ── Parameters ── */}
-            {activeModule && (activeModule.inputs.length > 0 || activeModule.required_analysis?.includes('linear_regression')) && (
+            {activeModule && (activeModule.inputs.some(i => i.type !== 'select' && (!i.show || i.show(inputValues[activeModule.id]))) || activeModule.required_analysis?.includes('linear_regression')) && (
               <div className="space-y-2">
                 <label className="text-xs font-bold uppercase tracking-widest block" style={{ color: 'var(--text-4)' }}>Parameters</label>
 
-                <div className="space-y-3 rounded-lg p-4" style={{ background: 'var(--app-bg)', border: '1px solid var(--border-1)' }}>
-                  {activeModule.inputs.map(input => (
+                <div className="space-y-4 rounded-lg p-4" style={{ background: 'var(--app-bg)', border: '1px solid var(--border-1)' }}>
+
+                  {activeModule.inputs.filter(i => i.type !== 'select' && (!i.show || i.show(inputValues[activeModule.id]))).map(input => (
                     <div key={input.id} className="space-y-1">
                       <div className="flex items-center justify-between gap-3">
-                        <label className="text-xs truncate" title={input.description || input.name} style={{ color: 'var(--text-2)' }}>{input.name}</label>
+                        <label className="text-xs truncate relative" title={input.description || input.name} style={{ color: 'var(--text-2)' }}>
+                          {input.name}
+                        </label>
                         <div className="flex items-center gap-0">
-                          {input.type === 'select' ? (
-                            <div className="relative">
-                              <select
-                                className="w-32 rounded px-2 py-1.5 text-xs font-mono outline-none appearance-none cursor-pointer transition-colors"
-                                style={{
-                                  background: 'var(--surface-bg)',
-                                  border: '1px solid var(--border-1)',
-                                  color: 'var(--text-1)',
-                                  paddingRight: '1.5rem'
-                                }}
-                                value={inputValues[activeModule.id]?.[input.id] || input.defaultValue || ''}
-                                onChange={(e) => handleInputChange(activeModule.id, input.id, e.target.value)}
-                                onFocus={e => e.currentTarget.style.borderColor = 'var(--accent)'}
-                                onBlur={e => e.currentTarget.style.borderColor = 'var(--border-1)'}
-                              >
-                                {input.options?.map(opt => (
-                                  <option key={opt.value} value={opt.value}>{opt.label}</option>
-                                ))}
-                              </select>
-                              <div className="absolute right-2 top-1/2 -translate-y-1/2 pointer-events-none" style={{ color: 'var(--text-4)' }}>
-                                <svg width="8" height="5" viewBox="0 0 10 6" fill="none" stroke="currentColor" strokeWidth="1.5"><path d="M1 1L5 5L9 1" /></svg>
-                              </div>
-                            </div>
-                          ) : (
-                            <NumberInput
-                              value={inputValues[activeModule.id]?.[input.id] ?? (input.defaultValue ?? '')}
-                              onChange={(val) => handleInputChange(activeModule.id, input.id, val)}
-                              min={input.min}
-                              max={input.max}
-                              step={input.step || 1}
-                              unit={input.unit}
-                              placeholder={input.defaultValue}
-                            />
-                          )}
+                          <NumberInput
+                            value={inputValues[activeModule.id]?.[input.id] ?? (input.defaultValue ?? '')}
+                            onChange={(val) => handleInputChange(activeModule.id, input.id, val)}
+                            min={input.min}
+                            max={input.max}
+                            step={input.step || 1}
+                            unit={input.unit}
+                            placeholder={input.defaultValue}
+                          />
                         </div>
                       </div>
                       {input.description && (
@@ -295,8 +312,8 @@ const AnalysisPanel = () => {
                   ))}
 
                   {/* Slope (auto-computed) - Only show if required by the module */}
-                  {activeModule.required_analysis?.includes('linear_regression') && (
-                    <div className="pt-3 space-y-1" style={{ borderTop: activeModule.inputs.length > 0 ? '1px dashed var(--border-1)' : 'none' }}>
+                  {activeModule.required_analysis?.includes('linear_regression') && (!activeModule.showSlope || activeModule.showSlope(inputValues[activeModule.id])) && (
+                    <div className="pt-3 space-y-1" style={{ borderTop: activeModule.inputs.filter(i => i.type !== 'select' && (!i.show || i.show(inputValues[activeModule.id]))).length > 0 ? '1px dashed var(--border-1)' : 'none' }}>
                       <div className="flex items-center justify-between gap-3">
                         <label className="text-xs decoration-dotted underline cursor-help" style={{ color: 'var(--text-3)', textDecorationColor: 'var(--border-2)' }} title="Auto-calculated via least-squares regression from your graph selection">Slope (B)</label>
                         <div className="px-2 py-1.5 text-xs font-mono rounded w-24 text-right"

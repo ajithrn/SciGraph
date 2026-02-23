@@ -5,7 +5,13 @@ import { movingAverage, savitzkyGolay } from '../utils';
 export const smoothing = {
   id: 'smoothing',
   name: 'Data Smoothing',
-  description: 'Reduce noise using Moving Average or Savitzky-Golay filters.',
+  description: (regression, inputs) => {
+    const method = inputs?.method || 'moving_average';
+    if (method === 'savitzky_golay') {
+      return 'Savitzky-Golay smoothing fits a polynomial to a sliding window of points using least-squares regression. It preserves features like peaks and edges better than simple averaging — ideal for spectral or chromatography data.';
+    }
+    return 'Moving Average smoothing replaces each data point with the average of its surrounding window. Simple and effective for reducing random noise in evenly-spaced data.';
+  },
   help: (
     <div className="space-y-2">
       <p><strong>Workflow:</strong></p>
@@ -49,21 +55,33 @@ export const smoothing = {
     },
     {
       id: 'polyOrder',
-      name: 'Polynomial Order (SG Only)',
+      name: 'Polynomial Order',
       type: 'number',
       defaultValue: 2,
       step: 1,
       min: 0,
-      description: 'Degree of polynomial to fit. Higher = follows curvature better.'
+      description: 'Degree of polynomial to fit. Higher = follows curvature better.',
+      show: (inputs) => (inputs?.method || 'moving_average') === 'savitzky_golay'
     }
   ],
 
-  renderInfo: () => (
-    <div className="font-mono text-xs text-center space-y-1">
-      <div style={{ color: 'var(--accent)' }}>y_smooth[i] = Σ (c[j] · y[i+j]) / Norm</div>
-      <div className="text-xs" style={{ color: 'var(--text-4)' }}>Convolution with window size w</div>
-    </div>
-  ),
+  renderInfo: (regression, inputs) => {
+    const method = inputs?.method || 'moving_average';
+    if (method === 'savitzky_golay') {
+      return (
+        <div className="font-mono text-xs text-center space-y-1">
+          <div style={{ color: 'var(--accent)' }}>y[i] = Σ c[j] · y[i+j]</div>
+          <div className="text-xs" style={{ color: 'var(--text-4)' }}>Savitzky-Golay: Least-squares polynomial fit</div>
+        </div>
+      );
+    }
+    return (
+      <div className="font-mono text-xs text-center space-y-1">
+        <div style={{ color: 'var(--accent)' }}>y_smooth[i] = Σ y[i+j] / w</div>
+        <div className="text-xs" style={{ color: 'var(--text-4)' }}>Moving Average: Uniform window of size w</div>
+      </div>
+    );
+  },
 
   /**
    * Calculates the smoothed dataset.

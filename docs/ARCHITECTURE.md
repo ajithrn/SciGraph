@@ -73,11 +73,34 @@ Plugin-based system. Each analysis method is a self-contained module in `src/ana
 
 Each module exports an object defining:
 
-- `id`, `name`, `description`, `inputs[]`
-- `calculate(data, inputs, { slope, regionData })` — computation function returning a result object.
-- `renderInfo(regression)` — (Optional) Function returning React node for custom formula display.
-- `renderResult(result)` — (Optional) Function returning React node for custom result formatting.
-- `required_analysis` — Array of dependencies (e.g., `['linear_regression']`).
+| Property | Type | Required | Description |
+|---|---|---|---|
+| `id` | `string` | ✅ | Unique identifier |
+| `name` | `string` | ✅ | Display name shown in the Method dropdown |
+| `description` | `string \| (regression, inputs) => string` | ✅ | Description text. Can be a function to return different text based on current inputs |
+| `inputs[]` | `array` | ✅ | List of input definitions (see below) |
+| `required_analysis` | `string[]` | ✅ | Dependencies e.g. `['linear_regression']`. Pass `[]` if none needed |
+| `calculate(data, inputs, ctx)` | `function` | ✅ | Main computation. Returns `{ value, unit, formula }` or `{ error }` |
+| `help` | `string \| JSX \| (regression, inputs) => JSX` | — | Workflow guide shown via the "Show workflow guide" toggle |
+| `renderInfo(regression, inputs)` | `function => JSX` | — | Formula card shown in the description block. Receives current regression + inputs so it can be dynamic |
+| `renderResult(result, dispatch)` | `function => JSX` | — | Custom result display. Falls back to a standard value/unit/formula layout if omitted |
+| `showSlope(inputs)` | `function => bool` | — | If provided, hides the auto-computed Slope (B) row when returns `false`. Useful for modes that don't use regression |
+
+**Input definition fields**:
+
+| Field | Description |
+|---|---|
+| `id` | Unique key |
+| `name` | Label in the UI |
+| `type` | `'number'` or `'select'` |
+| `defaultValue` | Initial value |
+| `unit` | (number) Unit label shown in the input widget |
+| `min`, `max`, `step` | (number) Bounds and increment |
+| `options[]` | (select) `[{ value, label }]` |
+| `description` | Short hint shown below the input |
+| `show(inputs) => bool` | If provided, the input is only rendered when this returns `true`. Used for conditionally relevant params |
+
+Select-type inputs (e.g. Test Method, Smoothing Method) are automatically lifted above the description card in the UI. Number inputs are shown in the Parameters block, filtered by their `show()` function.
 
 The registry aggregates these modules and exports them for use by the `AnalysisPanel`.
 
@@ -93,19 +116,33 @@ import React from 'react';
 export const youngsModulus = {
   id: 'youngs-modulus',
   name: "Young's Modulus",
-  description: 'Calculates Young\'s Modulus from stress-strain slope.',
+  // description can be a string or a function of (regression, inputs)
+  description: (regression, inputs) => {
+    return 'Calculates Young\'s Modulus from the slope of a stress-strain curve.';
+  },
+  help: 'Select the linear region on the stress-strain graph, then enter the cross-sectional area.',
   inputs: [
-    { id: 'area', name: 'Area', type: 'number', unit: 'mm²' }
+    {
+      id: 'area',
+      name: 'Cross-Section Area',
+      type: 'number',
+      unit: 'mm²',
+      defaultValue: 1,
+      description: 'Cross-sectional area of the sample.',
+    }
   ],
   required_analysis: ['linear_regression'],
+  // renderInfo can use inputs to dynamically show the formula
+  renderInfo: (regression, inputs) => (
+    <div className="font-mono text-xs text-center">
+      <div style={{ color: 'var(--accent)' }}>E = B / A</div>
+      <div style={{ color: 'var(--text-4)' }}>B = slope, A = area</div>
+    </div>
+  ),
   calculate: (data, inputs, ctx) => {
-    // ... logic using ctx.slope
-    return { value: result, unit: 'Pa' };
-  },
-  // Optional: Custom result display
-  renderResult: (res) => (
-    <div className="font-bold">{res.value} {res.unit}</div>
-  )
+    const E = ctx.slope / inputs.area;
+    return { value: E, unit: 'GPa', formula: 'B / A' };
+  }
 };
 ```
 

@@ -4,7 +4,13 @@ import { useData } from '../../context/DataContext';
 export const derivatives = {
   id: 'derivatives',
   name: 'Derivatives',
-  description: 'Calculate rate of change (1st) or curvature (2nd) using finite differences.',
+  description: (regression, inputs) => {
+    const order = String(inputs?.order || '1');
+    if (order === '2') {
+      return 'Calculates the 2nd derivative (curvature/concavity) of the selected data region using central finite differences. Useful for identifying inflection points and peak shapes.';
+    }
+    return 'Calculates the 1st derivative (rate of change/slope) of the selected data region using central finite differences. Useful for detecting trends and changes in velocity.';
+  },
 
   help: (
     <div className="space-y-2">
